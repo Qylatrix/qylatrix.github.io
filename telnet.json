@@ -1,0 +1,127 @@
+{
+    "name": "Telnet - Remote Terminal",
+    "port": 23,
+    "description": "Unencrypted remote terminal protocol - easy target",
+    "icon": "💻",
+    "techniques": [
+        {
+            "id": "telnet-1",
+            "name": "Default Credentials",
+            "difficulty": "Beginner",
+            "description": "Test common default credentials for Telnet services",
+            "steps": [
+                "Connect to Telnet service",
+                "Try common username/password combinations",
+                "Enumerate system after access"
+            ],
+            "commands": [
+                {
+                    "tool": "Telnet Client",
+                    "command": "telnet <target_ip>",
+                    "description": "Connect to Telnet"
+                },
+                {
+                    "tool": "Common Logins",
+                    "command": "admin:admin, root:root, user:user",
+                    "description": "Default credentials to try"
+                }
+            ],
+            "tips": [
+                "Telnet traffic is unencrypted - sniff credentials",
+                "Many IoT devices use Telnet with defaults"
+            ]
+        },
+        {
+            "id": "telnet-2",
+            "name": "Brute Force Attack",
+            "difficulty": "Beginner",
+            "description": "Crack Telnet credentials through password guessing",
+            "steps": [
+                "Identify running Telnet service",
+                "Prepare wordlists",
+                "Launch brute force attack"
+            ],
+            "commands": [
+                {
+                    "tool": "Hydra",
+                    "command": "hydra -l admin -P passwords.txt telnet://<target_ip>",
+                    "description": "Brute force Telnet"
+                },
+                {
+                    "tool": "Medusa",
+                    "command": "medusa -h <target_ip> -u admin -P passwords.txt -M telnet",
+                    "description": "Medusa brute force"
+                },
+                {
+                    "tool": "Ncrack",
+                    "command": "ncrack -p 23 --user root -P passwords.txt <target_ip>",
+                    "description": "Ncrack Telnet attack"
+                }
+            ],
+            "tips": [
+                "Telnet rarely has account lockout",
+                "Check for IoT-specific default passwords"
+            ]
+        },
+        {
+            "id": "telnet-3",
+            "name": "Network Sniffing",
+            "difficulty": "Intermediate",
+            "description": "Capture Telnet credentials in transit (unencrypted)",
+            "steps": [
+                "Position for network capture",
+                "Start packet capture",
+                "Filter for Telnet traffic",
+                "Extract credentials"
+            ],
+            "commands": [
+                {
+                    "tool": "Wireshark Filter",
+                    "command": "tcp.port == 23",
+                    "description": "Filter Telnet traffic"
+                },
+                {
+                    "tool": "tcpdump",
+                    "command": "tcpdump -i eth0 port 23 -w telnet.pcap",
+                    "description": "Capture Telnet traffic"
+                },
+                {
+                    "tool": "ettercap",
+                    "command": "ettercap -T -q -i eth0 -M arp:remote /<target>/ /<gateway>/",
+                    "description": "ARP poison to intercept"
+                }
+            ],
+            "tips": [
+                "Telnet sends credentials in plaintext",
+                "Great opportunity for credential harvesting"
+            ]
+        },
+        {
+            "id": "telnet-4",
+            "name": "Version Exploitation",
+            "difficulty": "Intermediate",
+            "description": "Exploit specific Telnet server vulnerabilities",
+            "steps": [
+                "Identify Telnet server version",
+                "Search for known exploits",
+                "Execute exploit"
+            ],
+            "commands": [
+                {
+                    "tool": "Nmap Banner",
+                    "command": "nmap -sV -p 23 <target_ip>",
+                    "description": "Get Telnet version"
+                },
+                {
+                    "tool": "Searchsploit",
+                    "command": "searchsploit telnet",
+                    "description": "Search for Telnet exploits"
+                }
+            ],
+            "tips": [
+                "Many embedded systems have vulnerable Telnet daemons",
+                "Check for Mirai-style vulnerabilities on IoT"
+            ]
+        }
+    ]
+}

