@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ module.title }} - CyberSec Learning</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            color: #22d3ee;
+            background: rgba(34, 211, 238, 0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 50px 30px;
+        }
+
+        .module-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .module-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .module-title {
+            font-size: 52px;
+            font-weight: 900;
+            margin-bottom: 15px;
+            color: var(--module-color);
+        }
+
+        .module-description {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+
+        .module-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 30px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--module-color);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+
+        .lessons-section {
+            margin-top: 50px;
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .lessons-grid {
+            display: grid;
+            gap: 25px;
+        }
+
+        .lesson-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-left: 4px solid var(--module-color);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .lesson-card:hover {
+            transform: translateX(10px);
+            background: rgba(255, 255, 255, 0.08);
+            border-left-width: 6px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .lesson-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .lesson-title-text {
+            font-size: 22px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .lesson-duration {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .lesson-topics {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .topic-tag {
+            padding: 6px 12px;
+            background: rgba(34, 211, 238, 0.15);
+            border-radius: 6px;
+            font-size: 12px;
+            color: #22d3ee;
+            font-weight: 500;
+        }
+
+        .progress-indicator {
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: #22c55e;
+            font-weight: 600;
+        }
+
+        .footer {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 30px 0;
+            margin-top: 80px;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-text {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .social-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .social-link svg {
+            width: 22px;
+            height: 22px;
+            fill: #fff;
+        }
+
+        @media (max-width: 768px) {
+            .module-title {
+                font-size: 36px;
+            }
+
+            .module-stats {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .lesson-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/dashboard" class="back-btn">← Back to Dashboard</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="module-header" style="--module-color: {{ module.color }}">
+            <div class="module-icon">{{ module.icon }}</div>
+            <h1 class="module-title">{{ module.title }}</h1>
+            <p class="module-description">{{ module.description }}</p>
+
+            <div class="module-stats">
+                <div class="stat-item">
+                    <div class="stat-value">{{ module.lessons|length }}</div>
+                    <div class="stat-label">Lessons</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">{{ (module.lessons|length * 25)|string + ' min' }}</div>
+                    <div class="stat-label">Total Time</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">0%</div>
+                    <div class="stat-label">Completed</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="lessons-section">
+            <h2 class="section-title">📚 Course Lessons</h2>
+
+            <div class="lessons-grid">
+                {% for lesson in module.lessons %}
+                <a href="/learn/{{ module.id }}/{{ lesson.id }}" class="lesson-card"
+                    style="--module-color: {{ module.color }}" data-lesson-id="{{ module.id }}-{{ lesson.id }}">
+                    <div class="lesson-header">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <span class="lesson-status" id="status-{{ module.id }}-{{ lesson.id }}">
+                                <span class="status-pending">{{ loop.index }}</span>
+                            </span>
+                            <h3 class="lesson-title-text">{{ lesson.title }}</h3>
+                        </div>
+                        <span class="lesson-duration">⏱️ {{ lesson.duration }}</span>
+                    </div>
+
+                    <div class="lesson-topics">
+                        {% for topic in lesson.topics[:4] %}
+                        <span class="topic-tag">{{ topic }}</span>
+                        {% endfor %}
+                        {% if lesson.topics|length > 4 %}
+                        <span class="topic-tag">+{{ lesson.topics|length - 4 }} more</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="progress-indicator" id="progress-{{ module.id }}-{{ lesson.id }}"
+                        style="display: none;">
+                        ✓ Completed
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+
+            <style>
+                .lesson-status {
+                    width: 36px;
+                    height: 36px;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: 700;
+                    font-size: 14px;
+                    flex-shrink: 0;
+                }
+
+                .status-pending {
+                    background: rgba(255, 255, 255, 0.1);
+                    border: 2px solid rgba(255, 255, 255, 0.3);
+                    width: 36px;
+                    height: 36px;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                .status-complete {
+                    background: linear-gradient(135deg, #22c55e, #16a34a);
+                    color: #fff;
+                    width: 36px;
+                    height: 36px;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
+                }
+
+                .lesson-card.completed {
+                    border-left-color: #22c55e !important;
+                    background: rgba(34, 197, 94, 0.05);
+                }
+
+                .lesson-card.completed .lesson-title-text {
+                    color: rgba(255, 255, 255, 0.7);
+                }
+            </style>
+
+            <script>
+                // Load completion status from localStorage
+                document.querySelectorAll('.lesson-card').forEach(card => {
+                    const lessonId = card.dataset.lessonId;
+                    const isCompleted = localStorage.getItem('lesson-' + lessonId) === 'completed';
+
+                    if (isCompleted) {
+                        card.classList.add('completed');
+                        const statusEl = document.getElementById('status-' + lessonId);
+                        statusEl.innerHTML = '<span class="status-complete">✓</span>';
+                        const progressEl = document.getElementById('progress-' + lessonId);
+                        progressEl.style.display = 'flex';
+                    }
+                });
+
+                // Calculate and update completion percentage
+                const totalLessons = document.querySelectorAll('.lesson-card').length;
+                const completedLessons = document.querySelectorAll('.lesson-card.completed').length;
+                const percentage = Math.round((completedLessons / totalLessons) * 100);
+                document.querySelector('.stat-value:last-of-type')?.closest('.stat-item')?.querySelector('.stat-value')?.textContent = percentage + '%';
+            </script>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-text">
+                © 2026 Qylatrix Academy - The Syntax of Safety
+            </div>
+
+            <div class="social-links">
+                <a href="https://github.com/Qylatrix" target="_blank" rel="noopener noreferrer" class="social-link"
+                    title="GitHub">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z">
+                        </path>
+                    </svg>
+                </a>
+                <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer" class="social-link"
+                    title="LinkedIn">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z">
+                        </path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

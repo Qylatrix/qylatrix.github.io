@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Meet the Qylatrix Team - Elite Cybersecurity Professionals">
+    <title>Our Team | Qylatrix</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Press+Start+2P&display=swap"
+        rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-cyan: #00ffc8;
+            --primary-pink: #ff006e;
+            --dark-bg: #0a0e1a;
+            --card-bg: rgba(15, 23, 42, 0.9);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --border-color: rgba(255, 0, 110, 0.5);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #000;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Matrix Rain Background */
+        #matrix-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.3;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(10, 14, 26, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 255, 200, 0.2);
+            animation: slideDown 0.6s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            color: var(--text-primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .logo-icon {
+            font-size: 32px;
+        }
+
+        .btn-back {
+            padding: 12px 28px;
+            background: transparent;
+            border: 1.5px solid var(--primary-cyan);
+            color: var(--primary-cyan);
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-back:hover {
+            background: var(--primary-cyan);
+            color: var(--dark-bg);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 255, 200, 0.3);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 140px 40px 80px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Header Section */
+        .page-header {
+            text-align: center;
+            margin-bottom: 80px;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        h1 {
+            font-family: 'Press Start 2P', monospace;
+            font-size: clamp(24px, 4vw, 48px);
+            font-weight: 400;
+            line-height: 1.4;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            text-shadow: 0 0 20px rgba(0, 255, 200, 0.5);
+            letter-spacing: 2px;
+        }
+
+        .page-description {
+            font-size: clamp(14px, 2vw, 18px);
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Team Card */
+        .team-container {
+            display: flex;
+            justify-content: center;
+            animation: fadeInScale 1s ease;
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .team-card {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            padding: 60px;
+            backdrop-filter: blur(20px);
+            transition: all 0.5s ease;
+            position: relative;
+            max-width: 900px;
+            width: 100%;
+            display: flex;
+            gap: 50px;
+            align-items: center;
+            box-shadow: 0 20px 60px rgba(255, 0, 110, 0.2);
+        }
+
+        .team-card:hover {
+            border-color: var(--primary-pink);
+            transform: translateY(-10px);
+            box-shadow: 0 30px 80px rgba(255, 0, 110, 0.4);
+        }
+
+        .team-card::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, var(--primary-pink), var(--primary-cyan));
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: -1;
+            filter: blur(10px);
+        }
+
+        .team-card:hover::before {
+            opacity: 0.5;
+        }
+
+        /* Photo Section */
+        .team-photo {
+            flex-shrink: 0;
+        }
+
+        .photo-circle {
+            width: 240px;
+            height: 240px;
+            border-radius: 50%;
+            border: 4px solid var(--primary-pink);
+            padding: 8px;
+            background: linear-gradient(135deg, var(--primary-pink), var(--primary-cyan));
+            box-shadow: 0 0 40px rgba(255, 0, 110, 0.5);
+            transition: all 0.5s ease;
+            overflow: hidden;
+        }
+
+        .team-card:hover .photo-circle {
+            transform: scale(1.05) rotate(5deg);
+            box-shadow: 0 0 60px rgba(255, 0, 110, 0.8);
+        }
+
+        .photo-inner {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: #1a1a2e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+            overflow: hidden;
+        }
+
+        .photo-inner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Info Section */
+        .team-info {
+            flex: 1;
+        }
+
+        .team-name {
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+            letter-spacing: -1px;
+        }
+
+        .team-role {
+            font-size: 18px;
+            color: var(--primary-pink);
+            font-weight: 700;
+            margin-bottom: 25px;
+            text-transform: capitalize;
+        }
+
+        .team-description {
+            font-size: 16px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        /* Skills */
+        .team-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .skill-tag {
+            padding: 10px 20px;
+            background: transparent;
+            border: 2px solid var(--primary-cyan);
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary-cyan);
+            transition: all 0.3s ease;
+        }
+
+        .skill-tag:hover {
+            background: var(--primary-cyan);
+            color: #000;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0, 255, 200, 0.4);
+        }
+
+        /* Social Links */
+        .team-social {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-btn {
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .social-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary-cyan);
+            color: var(--primary-cyan);
+            transform: translateY(-3px);
+        }
+
+        .social-icon {
+            font-size: 18px;
+        }
+
+        /* Footer */
+        .footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            text-align: center;
+            margin-top: 100px;
+            background: rgba(5, 8, 16, 0.5);
+            position: relative;
+            z-index: 10;
+        }
+
+        .footer-text {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .team-card {
+                flex-direction: column;
+                text-align: center;
+                padding: 40px;
+            }
+
+            .photo-circle {
+                width: 200px;
+                height: 200px;
+            }
+
+            .team-name {
+                font-size: 32px;
+            }
+
+            .team-social {
+                justify-content: center;
+            }
+
+            .team-skills {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 100px 20px 60px;
+            }
+
+            .nav-container {
+                padding: 0 20px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            .team-card {
+                padding: 30px 20px;
+            }
+
+            .photo-circle {
+                width: 160px;
+                height: 160px;
+            }
+
+            .photo-inner {
+                font-size: 60px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Matrix Rain Background -->
+    <canvas id="matrix-canvas"></canvas>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <img src="{{ url_for('static', filename='images/qylatrix-logo.png') }}" alt="Qylatrix"
+                    style="height: 45px; width: auto;">
+                <span>Qylatrix</span>
+            </a>
+            <a href="/" class="btn-back">
+                ← Back to Home
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Header Section -->
+        <div class="page-header">
+            <h1>Meet Our Team</h1>
+            <p class="page-description">
+                Expert professionals dedicated to securing your digital assets
+            </p>
+        </div>
+
+        <!-- Team Container -->
+        <div class="team-container">
+            <div class="team-card">
+                <!-- Photo Section -->
+                <div class="team-photo">
+                    <div class="photo-circle">
+                        <div class="photo-inner">
+                            <img src="{{ url_for('static', filename='images/pretam-saha.jpg') }}" alt="Pretam Saha">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Info Section -->
+                <div class="team-info">
+                    <h2 class="team-name">Pretam Saha</h2>
+                    <p class="team-role">Founder & Lead Security Analyst</p>
+                    <p class="team-description">
+                        A results-driven Cybersecurity Analyst with expertise in penetration testing, threat modeling,
+                        and secure architecture design. Passionate about protecting organizations from evolving cyber
+                        threats.
+                    </p>
+
+                    <!-- Skills -->
+                    <div class="team-skills">
+                        <span class="skill-tag">Pentesting</span>
+                        <span class="skill-tag">Red Team</span>
+                        <span class="skill-tag">Cloud Security</span>
+                        <span class="skill-tag">OSCP</span>
+                    </div>
+
+                    <!-- Social Links -->
+                    <div class="team-social">
+                        <a href="https://www.linkedin.com/in/pretam-saha/" target="_blank" class="social-btn">
+                            <span class="social-icon">💼</span>
+                            LinkedIn
+                        </a>
+                        <a href="https://github.com/Qylatrix" target="_blank" class="social-btn">
+                            <span class="social-icon">🐙</span>
+                            GitHub
+                        </a>
+                        <a href="mailto:pretamsaaha@gmail.com" class="social-btn">
+                            <span class="social-icon">📧</span>
+                            Email
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p class="footer-text">© 2026 Qylatrix. All rights reserved.</p>
+            <p class="footer-text" style="margin-top: 10px; opacity: 0.6;">Elite Cybersecurity Solutions for the Digital
+                Age</p>
+        </div>
+    </footer>
+
+    <!-- Matrix Rain Script -->
+    <script>
+        // Matrix Rain Effect
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const letters = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+
+        const drops = [];
+        for (let i = 0; i < columns; i++) {
+            drops[i] = Math.random() * -100;
+        }
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#0f0';
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = letters[Math.floor(Math.random() * letters.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        setInterval(drawMatrix, 35);
+
+        // Resize canvas on window resize
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CTF Labs - Qylatrix Academy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.6);
+            --accent-cyan: #00ffc8;
+            --accent-purple: #9C27B0;
+            --accent-blue: #2196F3;
+            --accent-orange: #FF9800;
+            --accent-red: #f44336;
+            --accent-green: #4CAF50;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            background-image:
+                radial-gradient(circle at 20% 50%, rgba(0, 255, 200, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 50%, rgba(156, 39, 176, 0.03) 0%, transparent 50%);
+        }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .brand-text {
+            font-size: 24px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00ffc8, #9C27B0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: var(--accent-cyan);
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 60px 30px;
+            background: linear-gradient(180deg, rgba(156, 39, 176, 0.1) 0%, transparent 100%);
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #00ffc8, #9C27B0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            color: var(--text-secondary);
+            font-size: 18px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Stats */
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--accent-cyan);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 30px;
+        }
+
+        /* Category Tabs */
+        .category-tabs {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .tab-btn {
+            padding: 12px 25px;
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tab-btn:hover,
+        .tab-btn.active {
+            background: var(--accent-cyan);
+            color: #000;
+            border-color: var(--accent-cyan);
+        }
+
+        /* Challenge Grid */
+        .challenges-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .challenge-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 25px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .challenge-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--card-color);
+        }
+
+        .challenge-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .challenge-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+
+        .challenge-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .challenge-points {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .points-easy {
+            background: var(--accent-green);
+            color: #fff;
+        }
+
+        .points-medium {
+            background: var(--accent-orange);
+            color: #000;
+        }
+
+        .points-hard {
+            background: var(--accent-red);
+            color: #fff;
+        }
+
+        .challenge-category {
+            display: inline-block;
+            padding: 4px 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .challenge-desc {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .challenge-content {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: var(--accent-cyan);
+            word-break: break-all;
+        }
+
+        .challenge-hint {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .challenge-input {
+            display: flex;
+            gap: 10px;
+        }
+
+        .flag-input {
+            flex: 1;
+            padding: 12px 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .flag-input:focus {
+            outline: none;
+            border-color: var(--accent-cyan);
+        }
+
+        .submit-btn {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, var(--accent-cyan), #00d4aa);
+            border: none;
+            border-radius: 8px;
+            color: #000;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(0, 255, 200, 0.3);
+        }
+
+        .result-msg {
+            margin-top: 10px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .solved-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--accent-green);
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .challenge-card.solved {
+            opacity: 0.7;
+        }
+
+        .challenge-card.solved::after {
+            content: '✓ SOLVED';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-15deg);
+            font-size: 40px;
+            font-weight: 900;
+            color: rgba(76, 175, 80, 0.3);
+            pointer-events: none;
+        }
+
+        /* Score Panel */
+        .score-panel {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px 30px;
+            z-index: 1000;
+        }
+
+        .score-panel h3 {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+
+        .score-value {
+            font-size: 32px;
+            font-weight: 900;
+            color: var(--accent-cyan);
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .challenges-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .score-panel {
+                bottom: 15px;
+                right: 15px;
+                left: 15px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-brand">
+                <span class="brand-text">🏁 CTF Labs</span>
+            </a>
+            <div class="nav-links">
+                <a href="/dashboard" class="nav-link">Academy</a>
+                <a href="/tools" class="nav-link">Tools</a>
+                <a href="/" class="nav-link">Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <div class="hero">
+        <h1>🎯 Capture The Flag Labs</h1>
+        <p>Practice your hacking skills with real CTF-style challenges. Solve puzzles, find flags, and level up!</p>
+
+        <div class="stats-bar">
+            <div class="stat">
+                <div class="stat-value" id="total-challenges">15</div>
+                <div class="stat-label">Challenges</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="solved-count">0</div>
+                <div class="stat-label">Solved</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="total-points">0</div>
+                <div class="stat-label">Points</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Category Tabs -->
+        <div class="category-tabs">
+            <button class="tab-btn active" onclick="filterCategory('all')">All</button>
+            <button class="tab-btn" onclick="filterCategory('crypto')">🔐 Cryptography</button>
+            <button class="tab-btn" onclick="filterCategory('web')">🌐 Web</button>
+            <button class="tab-btn" onclick="filterCategory('forensics')">🔍 Forensics</button>
+            <button class="tab-btn" onclick="filterCategory('misc')">🎲 Misc</button>
+        </div>
+
+        <!-- Challenges Grid -->
+        <div class="challenges-grid" id="challenges-container">
+            <!-- Challenges will be loaded here -->
+        </div>
+    </div>
+
+    <!-- Score Panel -->
+    <div class="score-panel">
+        <h3>Your Score</h3>
+        <div class="score-value"><span id="current-score">0</span> pts</div>
+    </div>
+
+    <script>
+        // CTF Challenges Data
+        const challenges = [
+            // CRYPTO - Easy
+            {
+                id: 'crypto-1',
+                title: 'Base64 Basics',
+                category: 'crypto',
+                difficulty: 'easy',
+                points: 10,
+                description: 'Decode this Base64 encoded flag.',
+                content: 'UXlsYXRyaXh7YjY0X2lzX25vdF9lbmNyeXB0aW9ufQ==',
+                hint: 'Use any Base64 decoder or the Encoder tool.',
+                flag: 'Qylatrix{b64_is_not_encryption}'
+            },
+            {
+                id: 'crypto-2',
+                title: 'ROT13 Rotation',
+                category: 'crypto',
+                difficulty: 'easy',
+                points: 10,
+                description: 'This classic cipher shifts letters by 13 positions.',
+                content: 'Dlyngevi{ebgngr_gur_nycunorg}',
+                hint: 'ROT13 is its own inverse - apply it twice to get back to original.',
+                flag: 'Qylatrix{rotate_the_alphabet}'
+            },
+            {
+                id: 'crypto-3',
+                title: 'Hex Decoder',
+                category: 'crypto',
+                difficulty: 'easy',
+                points: 15,
+                description: 'Convert this hexadecimal to ASCII text.',
+                content: '51796c617472697x7b6865785f746f5f617363696920697d',
+                hint: 'Each pair of hex digits represents one character. Watch for typos!',
+                flag: 'Qylatrix{hex_to_ascii}'
+            },
+            // CRYPTO - Medium
+            {
+                id: 'crypto-4',
+                title: 'Caesar Shift',
+                category: 'crypto',
+                difficulty: 'medium',
+                points: 25,
+                description: 'The Caesar cipher with an unknown shift. Can you brute force it?',
+                content: 'Tbodwuny{ljxpju_rdqwc_3}',
+                hint: 'Try all 26 possible shifts. The shift is less than 10.',
+                flag: 'Qylatrix{caesar_works_3}'
+            },
+            {
+                id: 'crypto-5',
+                title: 'Binary Brain',
+                category: 'crypto',
+                difficulty: 'medium',
+                points: 25,
+                description: 'Convert binary to find the hidden message.',
+                content: '01010001 01111001 01101100 01100001 01110100 01110010 01101001 01111000 01111011 00110000 00110001 01011111 01101101 01100001 01110011 01110100 01100101 01110010 01111101',
+                hint: 'Each 8-bit group is one ASCII character.',
+                flag: 'Qylatrix{01_master}'
+            },
+            // CRYPTO - Hard
+            {
+                id: 'crypto-6',
+                title: 'MD5 Cracker',
+                category: 'crypto',
+                difficulty: 'hard',
+                points: 50,
+                description: 'This MD5 hash is a common password. Crack it!',
+                content: '21232f297a57a5a743894a0e4a801fc3',
+                hint: 'Try common passwords or use an online MD5 lookup. Flag format: Qylatrix{password}',
+                flag: 'Qylatrix{admin}'
+            },
+            // WEB - Easy
+            {
+                id: 'web-1',
+                title: 'View Source',
+                category: 'web',
+                difficulty: 'easy',
+                points: 10,
+                description: 'Sometimes the flag is hiding in plain sight...',
+                content: '<!-- Check the HTML comments! Flag: Qylatrix{source_code_ftw} -->',
+                hint: 'Right-click → View Page Source, or Ctrl+U',
+                flag: 'Qylatrix{source_code_ftw}'
+            },
+            {
+                id: 'web-2',
+                title: 'Robots.txt',
+                category: 'web',
+                difficulty: 'easy',
+                points: 15,
+                description: 'Websites often hide things from search engines...',
+                content: 'User-agent: *\nDisallow: /secret/\nDisallow: /admin/\n# Flag: Qylatrix{robots_txt_recon}',
+                hint: 'Check /robots.txt on any website to find hidden paths.',
+                flag: 'Qylatrix{robots_txt_recon}'
+            },
+            // WEB - Medium
+            {
+                id: 'web-3',
+                title: 'Cookie Monster',
+                category: 'web',
+                difficulty: 'medium',
+                points: 30,
+                description: 'Cookies store session data. This one is Base64 encoded.',
+                content: 'session=YWRtaW49ZmFsc2U=\nDecode and change admin to true!\nResult: Qylatrix{cookie_tampering}',
+                hint: 'Decode the cookie, modify it, then re-encode.',
+                flag: 'Qylatrix{cookie_tampering}'
+            },
+            // FORENSICS - Easy
+            {
+                id: 'forensics-1',
+                title: 'String Theory',
+                category: 'forensics',
+                difficulty: 'easy',
+                points: 15,
+                description: 'Hidden strings in files can reveal secrets.',
+                content: 'Run: strings suspicious_file.bin\n...\nQylatrix{strings_find_secrets}\n...',
+                hint: 'The strings command extracts readable text from binary files.',
+                flag: 'Qylatrix{strings_find_secrets}'
+            },
+            {
+                id: 'forensics-2',
+                title: 'EXIF Explorer',
+                category: 'forensics',
+                difficulty: 'easy',
+                points: 15,
+                description: 'Image metadata can contain hidden information.',
+                content: 'exiftool image.jpg\n...\nComment: Qylatrix{metadata_matters}\n...',
+                hint: 'Use exiftool or online EXIF viewers to check image metadata.',
+                flag: 'Qylatrix{metadata_matters}'
+            },
+            // FORENSICS - Medium  
+            {
+                id: 'forensics-3',
+                title: 'File Magic',
+                category: 'forensics',
+                difficulty: 'medium',
+                points: 30,
+                description: 'This file has a wrong extension. What is it really?',
+                content: 'hexdump mystery.txt | head\n89 50 4E 47 0D 0A 1A 0A ...',
+                hint: 'The magic bytes 89 50 4E 47 indicate a PNG file!',
+                flag: 'Qylatrix{magic_bytes_reveal}'
+            },
+            // MISC - Easy
+            {
+                id: 'misc-1',
+                title: 'Morse Message',
+                category: 'misc',
+                difficulty: 'easy',
+                points: 15,
+                description: 'Decode this Morse code message.',
+                content: '--.- -.-- .-.. .- - .-. .. -..- { -- --- .-. ... . ..--.- -.-. --- -.. . }',
+                hint: 'Use an online Morse decoder or our Multi-Converter tool!',
+                flag: 'QYLATRIX{MORSE_CODE}'
+            },
+            {
+                id: 'misc-2',
+                title: 'Decimal Decode',
+                category: 'misc',
+                difficulty: 'easy',
+                points: 10,
+                description: 'Each number is an ASCII code.',
+                content: '81 121 108 97 116 114 105 120 123 97 115 99 105 105 95 49 48 49 125',
+                hint: 'Convert each decimal number to its ASCII character.',
+                flag: 'Qylatrix{ascii_101}'
+            },
+            // MISC - Hard
+            {
+                id: 'misc-3',
+                title: 'Multi-Layer',
+                category: 'misc',
+                difficulty: 'hard',
+                points: 75,
+                description: 'This flag is encoded multiple times. Decode each layer!',
+                content: 'Vm0wd2QyUXlVWGxWV0d4V1YwZDRWMVl3WkRSV01WbDNXa1JTVjAxV2JETlhhMUpUVmpBeFYySkVUbGhoTVVwVVZtcEJlRll5U2tWVWJHaG9UVlZ3VlZadGNFSmxSbGw1VTJ0V1ZXSkhhRzlVVmxaM1ZsWmFjVkZ0UmxSTmJFcEpWbTEwYTFkSFNrZGpSVGxhVmpOU1IxcFZXbUZrUjA1R1UyMTRVMkpIZHpGV1ZFb3dWakZhV0ZOcmFHaFNlbXhXVm0xNFlVMHhXbk5YYlVaclVqQTFSMVV5TVRSVk1rcElaSHBHVjFaRmIzZFdha1poVjBaT2NtRkhhRk5sYlhoWFZtMHdlR0l4U2tkWGJHUllZa2RTV0ZsclduZFhSbXhZWlVWT1dHSkdjRWxhU0hCSFZqSkdjbUV6YUZaaGExcG9Xa1ZhUzJSV1ZuUmhSazVzWWxob1dGWnRNVEJXTVd4WFdrWm9hVkp0VWs5V2JGcEhUa1paZUdOSVpHbFNiRXBaV2xWb1QxWldXblJsU0dScFRWZFNNMVpxUmxwbGJVWklVbTFHVjFadVFYaFdWM0JIVkRKU1YxVnNWbFppVjJoeldXeG9iMWRHV1hoWGJGcHNVbTFTV0ZZeWN6RldNa3BIWTBST1YyRXhjSEZVVmxwWFZsWkdkVlJyTlZOTlZuQjRWbFJLTUdFeVJrZFRiRlpZWWxWYWNGWnRkSGRWVmxKelZtMUdWMVpzU2xoWk1GWjNWbFphZEdSSVpGZFdla0V4VmxSS1IyTXhUblZTYkdSb1lURndXRlpHV21GVE1rNUhWMjVHVkdFelVsaFZha0YzWlZaYVNHUklaRlZpUjNoWFZqSXhSMVl3TVhOalJtaHFVbGRTVkZac1dtRmpNazE1VW10a1YySkhPVE5XTW5SWFZqSkdSMk5GV2xoaE1WcGhWbXBLYjFkR1VsWlhiVVpyVWxSR1NWVXhXbXRoYlVaelYyeHdXRlpzU25WVk1GcExaRVpLV1dOR1pGcFdNVXBYVm14a01HRXhhM2ROU0d4V1lsUnNXRlpxU2pSWlZscFlZM3BHV2xZelVrZFhhMmhQVmxkS1NHRkdRbHBXUlVWM1ZqRmFkMUpXVm5OaFJtUm9Za1p3TlZaR1pEUlRNVkpYVjJ4V1UySkdXbGhVVmxaM1YxWnNObEpyZEdoU01IQkhWR3hhWVZSdFJqWmhSV1JWWWtad2FGVXdaRXRUUmxaellVWmtVMDFWY0VsV2JHUjNVekZKZVZKcmFHeFNiV2h6Vm0xMGQwNXNWblJsU0dSVVVtMVNTRll5TVVkV1YwVjRZMFpzV2xaWFVrZGFWV1JQVWpGT2RGSnNhRk5XUlZwWlZtMHhNR1F4VlhsVGEyUlhZVWhDV0ZaclpEUlpWbHBJWlVjNVZtSkhVakJhVldRd1ZsWmFjVkpyYUZkTmJtaFVWa2R6TVZsV1VuTmFSM1JUVWxWd2RsWkdZM2hPUmxKelYyeG9hMUpXY0hOYVJFRjNaV3hhZEdORlVsUmlSM2hIV1d0YVUxVXhXWGRTYWxKV1RWNXNXQTBBR1'
+                hint: 'Start with Base64, then check for more layers... (Flag: Qylatrix{multi_layer_master})',
+                flag: 'Qylatrix{multi_layer_master}'
+            }
+        ];
+
+        // State
+        let solvedChallenges = JSON.parse(localStorage.getItem('ctfLabsSolved') || '{}');
+        let totalScore = Object.keys(solvedChallenges).reduce((sum, id) => {
+            const challenge = challenges.find(c => c.id === id);
+            return sum + (challenge ? challenge.points : 0);
+        }, 0);
+
+        // Update stats
+        function updateStats() {
+            document.getElementById('solved-count').textContent = Object.keys(solvedChallenges).length;
+            document.getElementById('total-points').textContent = totalScore;
+            document.getElementById('current-score').textContent = totalScore;
+        }
+
+        // Render challenges
+        function renderChallenges(category = 'all') {
+            const container = document.getElementById('challenges-container');
+            const filtered = category === 'all'
+                ? challenges
+                : challenges.filter(c => c.category === category);
+
+            container.innerHTML = filtered.map(c => `
+                <div class="challenge-card ${solvedChallenges[c.id] ? 'solved' : ''}" 
+                     style="--card-color: ${getColor(c.category)}"
+                     data-category="${c.category}">
+                    ${solvedChallenges[c.id] ? '<div class="solved-badge">SOLVED</div>' : ''}
+                    <div class="challenge-header">
+                        <h3 class="challenge-title">${c.title}</h3>
+                        <span class="challenge-points points-${c.difficulty}">${c.points} pts</span>
+                    </div>
+                    <span class="challenge-category">${c.category}</span>
+                    <p class="challenge-desc">${c.description}</p>
+                    <div class="challenge-content">${escapeHtml(c.content)}</div>
+                    <p class="challenge-hint">💡 Hint: ${c.hint}</p>
+                    <div class="challenge-input">
+                        <input type="text" class="flag-input" id="input-${c.id}" 
+                               placeholder="Qylatrix{...}" ${solvedChallenges[c.id] ? 'disabled' : ''}>
+                        <button class="submit-btn" onclick="submitFlag('${c.id}')" 
+                                ${solvedChallenges[c.id] ? 'disabled' : ''}>Submit</button>
+                    </div>
+                    <div class="result-msg" id="result-${c.id}"></div>
+                </div>
+            `).join('');
+        }
+
+        function getColor(category) {
+            const colors = {
+                crypto: '#9C27B0',
+                web: '#2196F3',
+                forensics: '#FF9800',
+                misc: '#00BCD4'
+            };
+            return colors[category] || '#00ffc8';
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        function filterCategory(category) {
+            // Update tabs
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            renderChallenges(category);
+        }
+
+        function submitFlag(id) {
+            const input = document.getElementById(`input-${id}`);
+            const result = document.getElementById(`result-${id}`);
+            const challenge = challenges.find(c => c.id === id);
+
+            if (!challenge) return;
+
+            const userFlag = input.value.trim();
+
+            // Check flag (case-insensitive for some)
+            if (userFlag === challenge.flag ||
+                (id === 'misc-1' && userFlag.toUpperCase() === challenge.flag)) {
+                // Correct!
+                solvedChallenges[id] = true;
+                localStorage.setItem('ctfLabsSolved', JSON.stringify(solvedChallenges));
+                totalScore += challenge.points;
+
+                result.innerHTML = `<span style="color: #4CAF50;">🎉 Correct! +${challenge.points} points</span>`;
+                updateStats();
+
+                // Refresh to show solved state
+                setTimeout(() => renderChallenges('all'), 1000);
+            } else {
+                result.innerHTML = `<span style="color: #f44336;">❌ Incorrect. Try again!</span>`;
+            }
+        }
+
+        // Initialize
+        renderChallenges();
+        updateStats();
+
+        // Allow Enter key to submit
+        document.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && e.target.classList.contains('flag-input')) {
+                const id = e.target.id.replace('input-', '');
+                submitFlag(id);
+            }
+        });
+    </script>
+</body>
+
+</html>
