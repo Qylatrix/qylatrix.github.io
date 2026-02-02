@@ -590,3 +590,14 @@ if __name__ == '__main__':
     print("="*70 + "\n")
     
     app.run(debug=debug_mode, host='0.0.0.0', port=port)
+    from flask import send_from_directory
+import os
+
+@app.route('/google0e9540b16cff9bac.html')
+def google_verify():
+    return send_from_directory(
+        os.path.dirname(os.path.abspath(__file__)),
+        'google0e9540b16cff9bac.html'
+    )
+
+
