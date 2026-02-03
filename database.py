@@ -130,6 +130,18 @@ def init_db():
             FOREIGN KEY (user_id) REFERENCES users (id)
         )
     ''')
+    # Contact messages table
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS contact_messages (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            email TEXT NOT NULL,
+            subject TEXT,
+            message TEXT NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            is_read INTEGER DEFAULT 0
+        )
+    ''')
     
 
     conn.commit()
@@ -337,6 +349,38 @@ def get_user_stats(user_id):
         'total_achievements': achievements,
         'learning_time_minutes': learning_time
     }
+
+def save_contact_message(name, email, subject, message):
+    """Save a contact form message"""
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            INSERT INTO contact_messages (name, email, subject, message)
+            VALUES (?, ?, ?, ?)
+        ''', (name, email, subject, message))
+        
+        conn.commit()
+        message_id = cursor.lastrowid
+        conn.close()
+        return {"success": True, "message_id": message_id}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+def get_all_contact_messages():
+    """Get all contact messages"""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    cursor.execute('''
+        SELECT * FROM contact_messages 
+        ORDER BY created_at DESC
+    ''')
+    
+    messages = [dict(row) for row in cursor.fetchall()]
+    conn.close()
+    return messages
 
 # Initialize database on module import
 if __name__ == "__main__":
