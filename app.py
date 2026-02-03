@@ -231,6 +231,55 @@ def google_verification():
     from flask import send_from_directory
     return send_from_directory(os.path.dirname(__file__), 'google0a954b01c6ff9bac.html')
 
+@app.route('/sitemap.xml')
+def sitemap():
+    """Generate XML sitemap for SEO"""
+    from datetime import datetime
+    
+    pages = [
+        {'url': '/', 'priority': '1.0', 'changefreq': 'weekly'},
+        {'url': '/academy', 'priority': '0.9', 'changefreq': 'weekly'},
+        {'url': '/tools', 'priority': '0.8', 'changefreq': 'weekly'},
+        {'url': '/team', 'priority': '0.7', 'changefreq': 'monthly'},
+        {'url': '/contact', 'priority': '0.8', 'changefreq': 'monthly'},
+        {'url': '/ctf-labs', 'priority': '0.7', 'changefreq': 'weekly'},
+    ]
+    
+    sitemap_xml = ['<?xml version="1.0" encoding="UTF-8"?>']
+    sitemap_xml.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
+    
+    base_url = 'https://qylatrix.pythonanywhere.com'
+    lastmod = datetime.now().strftime('%Y-%m-%d')
+    
+    for page in pages:
+        sitemap_xml.append('  <url>')
+        sitemap_xml.append(f'    <loc>{base_url}{page["url"]}</loc>')
+        sitemap_xml.append(f'    <lastmod>{lastmod}</lastmod>')
+        sitemap_xml.append(f'    <changefreq>{page["changefreq"]}</changefreq>')
+        sitemap_xml.append(f'    <priority>{page["priority"]}</priority>')
+        sitemap_xml.append('  </url>')
+    
+    sitemap_xml.append('</urlset>')
+    
+    response = app.make_response('\n'.join(sitemap_xml))
+    response.headers['Content-Type'] = 'application/xml'
+    return response
+
+@app.route('/robots.txt')
+def robots():
+    """Robots.txt for search engine crawlers"""
+    robots_txt = """User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /dashboard
+Disallow: /learn/
+
+Sitemap: https://qylatrix.pythonanywhere.com/sitemap.xml
+"""
+    response = app.make_response(robots_txt)
+    response.headers['Content-Type'] = 'text/plain'
+    return response
+
 @app.route('/api/contact/submit', methods=['POST'])
 def submit_contact():
     """Handle contact form submission"""
