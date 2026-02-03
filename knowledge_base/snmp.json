@@ -1,0 +1,127 @@
+{
+    "name": "SNMP - Network Management",
+    "port": 161,
+    "description": "Simple Network Management Protocol for device monitoring",
+    "icon": "📡",
+    "techniques": [
+        {
+            "id": "snmp-1",
+            "name": "Community String Guessing",
+            "difficulty": "Beginner",
+            "description": "Guess SNMP community strings for access",
+            "steps": [
+                "Identify SNMP service",
+                "Try common community strings",
+                "Enumerate MIB data"
+            ],
+            "commands": [
+                {
+                    "tool": "onesixtyone",
+                    "command": "onesixtyone -c community.txt <target_ip>",
+                    "description": "Fast community string scanner"
+                },
+                {
+                    "tool": "snmpwalk",
+                    "command": "snmpwalk -v2c -c public <target_ip>",
+                    "description": "Walk SNMP tree with public string"
+                },
+                {
+                    "tool": "Nmap",
+                    "command": "nmap -sU -p 161 --script snmp-brute <target_ip>",
+                    "description": "Brute force community strings"
+                }
+            ],
+            "tips": [
+                "Common strings: public, private, community, manager",
+                "SNMPv1/v2c have no encryption"
+            ]
+        },
+        {
+            "id": "snmp-2",
+            "name": "Information Extraction",
+            "difficulty": "Beginner",
+            "description": "Extract valuable system information via SNMP",
+            "steps": [
+                "Connect with valid community string",
+                "Query system information",
+                "Extract user accounts, interfaces, etc."
+            ],
+            "commands": [
+                {
+                    "tool": "snmpwalk",
+                    "command": "snmpwalk -v2c -c public <target_ip> 1.3.6.1.2.1.1",
+                    "description": "Get system info"
+                },
+                {
+                    "tool": "snmpenum",
+                    "command": "snmpenum <target_ip> public windows.txt",
+                    "description": "Enumerate Windows info"
+                },
+                {
+                    "tool": "snmp-check",
+                    "command": "snmp-check <target_ip> -c public",
+                    "description": "Comprehensive SNMP enumeration"
+                }
+            ],
+            "tips": [
+                "Extract running processes, installed software",
+                "Get network interfaces and routing tables"
+            ]
+        },
+        {
+            "id": "snmp-3",
+            "name": "SNMP Write Access",
+            "difficulty": "Advanced",
+            "description": "Use read-write community string to modify device",
+            "steps": [
+                "Find read-write community string",
+                "Identify writable OIDs",
+                "Modify device configuration"
+            ],
+            "commands": [
+                {
+                    "tool": "snmpset",
+                    "command": "snmpset -v2c -c private <target_ip> <oid> s 'value'",
+                    "description": "Set SNMP value"
+                },
+                {
+                    "tool": "Metasploit",
+                    "command": "use auxiliary/scanner/snmp/snmp_set",
+                    "description": "SNMP set module"
+                }
+            ],
+            "tips": [
+                "RW string often 'private'",
+                "Can change device configs, routing tables",
+                "Some devices allow command execution"
+            ]
+        },
+        {
+            "id": "snmp-4",
+            "name": "SNMPv3 Attacks",
+            "difficulty": "Advanced",
+            "description": "Attack SNMPv3 with user enumeration and auth bypass",
+            "steps": [
+                "Enumerate SNMPv3 users",
+                "Attempt authentication attacks",
+                "Exploit weak configurations"
+            ],
+            "commands": [
+                {
+                    "tool": "Nmap Script",
+                    "command": "nmap -sU -p 161 --script snmp-info <target_ip>",
+                    "description": "Get SNMP version info"
+                },
+                {
+                    "tool": "snmpwalk v3",
+                    "command": "snmpwalk -v3 -u admin -l authNoPriv -a MD5 -A password <target_ip>",
+                    "description": "SNMPv3 authenticated walk"
+                }
+            ],
+            "tips": [
+                "SNMPv3 uses authentication but check for weak passwords",
+                "NoAuthNoPriv mode has no protection"
+            ]
+        }
+    ]
+}
