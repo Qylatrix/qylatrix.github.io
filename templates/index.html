@@ -17,23 +17,6 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <meta name="google-site-verification" content="Z3pW8nQqBPfAinnTEHNlIQev0kZDRDZV2cTpdMHKKis" />
-    <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "Qylatrix",
-  "url": "https://qylatrix-github-io.onrender.com/",
-  "logo": "https://qylatrix-github-io.onrender.com/logo.png",
-  "sameAs": [
-    "https://www.linkedin.com/company/qylatrix",
-    "https://github.com/Qylatrix"
-  ],
-  "description": "Elite cybersecurity solutions including penetration testing, security audits, and threat intelligence."
-}
-</script>
-
-
 </head>
 
 <body>
@@ -80,7 +63,7 @@
                 <li><a href="/tools" class="nav-link">Tools</a></li>
                 <li><a href="/academy" class="nav-link">Qylatrix Academy</a></li>
                 <li><a href="/team" class="nav-link">Team</a></li>
-                <li><a href="#contact" class="nav-link nav-highlight">Contact</a></li>
+                <li><a href="/contact" class="nav-link nav-highlight">Contact</a></li>
             </ul>
             <button class="hamburger-menu" id="nav-toggle" aria-label="Toggle menu">
                 <span></span>
@@ -456,18 +439,21 @@
     <!-- Security Tools Section - Moved to /tools -->
 
 
-    <!-- Contact Section - Premium Redesign -->
+    <!-- Contact CTA Section - Simplified -->
     <section id="contact" class="contact-section-premium">
         <div class="contact-bg-glow"></div>
         <div class="container">
             <div class="section-header-premium">
                 <span class="section-badge">Let's Connect</span>
-                <h2 class="section-title-premium">Get In <span class="gradient-text-cyan">Touch</span></h2>
-                <p class="section-subtitle-premium">Interested in working together? We'd love to hear from you.</p>
+                <h2 class="section-title-premium">Ready to <span class="gradient-text-cyan">Work Together?</span></h2>
+                <p class="section-subtitle-premium">
+                    Have a project in mind or need cybersecurity expertise? We're here to help secure your digital
+                    assets.
+                </p>
             </div>
 
+            <!-- Quick Contact Info -->
             <div class="contact-grid-premium">
-                <!-- Contact Info Cards -->
                 <div class="contact-info-premium">
                     <div class="contact-card-premium">
                         <div class="contact-card-glow"></div>
@@ -481,7 +467,7 @@
                         </div>
                         <div class="contact-text">
                             <h4>Email</h4>
-                            <a href="mailto:pretamsaaha@gmail.com">qylatrix@gmail.com</a>
+                            <a href="mailto:qylatrix@gmail.com">qylatrix@gmail.com</a>
                         </div>
                     </div>
 
@@ -523,59 +509,24 @@
                                 rel="noopener noreferrer">github.com/Qylatrix</a>
                         </div>
                     </div>
-
-                    <div class="contact-card-premium">
-                        <div class="contact-card-glow"></div>
-                        <div class="contact-icon-wrapper">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round">
-                                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
-                                <circle cx="12" cy="10" r="3"></circle>
-                            </svg>
-                        </div>
-                        <div class="contact-text">
-                            <h4>Location</h4>
-                            <span>India</span>
-                        </div>
-                    </div>
                 </div>
 
-                <!-- Contact Form -->
-                <form class="contact-form-premium" id="contact-form">
-                    <div class="form-glow"></div>
-                    <h3 class="form-title">Send us a message</h3>
-                    <div class="form-row">
-                        <div class="form-group-premium">
-                            <input type="text" class="form-input-premium" id="contact-name" placeholder=" " required>
-                            <label for="contact-name">Your Name</label>
-                            <div class="input-border"></div>
-                        </div>
-                        <div class="form-group-premium">
-                            <input type="email" class="form-input-premium" id="contact-email" placeholder=" " required>
-                            <label for="contact-email">Your Email</label>
-                            <div class="input-border"></div>
-                        </div>
+                <!-- CTA Button to Contact Page -->
+                <div class="contact-cta-wrapper">
+                    <div class="cta-content">
+                        <h3 class="cta-title">Get in Touch</h3>
+                        <p class="cta-description">
+                            Fill out our contact form and we'll get back to you within 24-48 hours.
+                        </p>
+                        <a href="/contact" class="btn-premium btn-contact-cta">
+                            <span>Send us a Message</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7" />
+                            </svg>
+                        </a>
                     </div>
-                    <div class="form-group-premium">
-                        <input type="text" class="form-input-premium" id="contact-subject" placeholder=" ">
-                        <label for="contact-subject">Subject</label>
-                        <div class="input-border"></div>
-                    </div>
-                    <div class="form-group-premium">
-                        <textarea class="form-input-premium form-textarea-premium" id="contact-message" rows="5"
-                            placeholder=" " required></textarea>
-                        <label for="contact-message">Your Message</label>
-                        <div class="input-border"></div>
-                    </div>
-                    <button type="submit" class="btn-premium">
-                        <span>Send Message</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2">
-                            <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
-                        </svg>
-                    </button>
-                </form>
+                </div>
             </div>
         </div>
     </section>
@@ -614,7 +565,4 @@
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
 
-
 </html>
-
-
