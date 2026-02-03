@@ -130,6 +130,7 @@ def init_db():
             FOREIGN KEY (user_id) REFERENCES users (id)
         )
     ''')
+    
     # Contact messages table
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS contact_messages (
@@ -142,7 +143,6 @@ def init_db():
             is_read INTEGER DEFAULT 0
         )
     ''')
-    
 
     conn.commit()
     conn.close()
