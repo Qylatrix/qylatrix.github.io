@@ -225,6 +225,11 @@ def contact():
     """Contact Us page"""
     return render_template('contact.html')
 
+@app.route('/google0a954b01c6ff9bac.html')
+def google_verification():
+    """Google Search Console verification file"""
+    return app.send_static_file('../google0a954b01c6ff9bac.html')
+
 @app.route('/api/contact/submit', methods=['POST'])
 def submit_contact():
     """Handle contact form submission"""
