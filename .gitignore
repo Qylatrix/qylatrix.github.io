@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+venv/
+env/
+venvWindows/
+
+# Database (NEVER commit user data!)
+users.db
+*.db
+*.sqlite
+*.sqlite3
+
+# Environment variables (IMPORTANT!)
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+~*
